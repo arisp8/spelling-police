@@ -52,6 +52,12 @@ public class Dictionary {
 		}
 	}
 	
+	/**
+	 * Calculates the distance between 2 Strings, showing how many differences they have
+	 * @param src The first String to compare
+	 * @param dest The String that's compared to the first one
+	 * @return Returns an integer showing the distance between the 2 strings
+	 */
 	private static int levenshteinDistance(String src, String dest)
 	{
 	    int[][] d = new int[src.length() + 1][dest.length() + 1];
@@ -59,34 +65,27 @@ public class Dictionary {
 	    char[] str1 = src.toCharArray();
 	    char[] str2 = dest.toCharArray();
 
-	    for (i = 0; i <= str1.length; i++)
-	    {
+	    for (i = 0; i <= str1.length; i++) {
 	        d[i][0] = i;
 	    }
-	    for (j = 0; j <= str2.length; j++)
-	    {
+	    
+	    for (j = 0; j <= str2.length; j++) {
 	        d[0][j] = j;
 	    }
-	    for (i = 1; i <= str1.length; i++)
-	    {
-	        for (j = 1; j <= str2.length; j++)
-	        {
+	    
+	    for (i = 1; i <= str1.length; i++) {
+	        for (j = 1; j <= str2.length; j++) {
 
-	            if (str1[i - 1] == str2[j - 1])
+	            if (str1[i - 1] == str2[j - 1]) {
 	                cost = 0;
-	            else
+	            } else {
 	                cost = 1;
+	            }
+	            
+	            d[i][j] = Math.min(d[i - 1][j] + 1, Math.min(d[i][j - 1] + 1, 
+	            		d[i - 1][j - 1] + cost));
 
-	            d[i][j] =
-	                Math.min(
-	                    d[i - 1][j] + 1,              // Deletion
-	                    Math.min(
-	                        d[i][j - 1] + 1,          // Insertion
-	                        d[i - 1][j - 1] + cost)); // Substitution
-
-	            if ((i > 1) && (j > 1) && (str1[i - 1] == 
-	                str2[j - 2]) && (str1[i - 2] == str2[j - 1]))
-	            {
+	            if ((i > 1) && (j > 1) && (str1[i - 1] == str2[j - 2]) && (str1[i - 2] == str2[j - 1])) {
 	                d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + cost);
 	            }
 	        }
@@ -95,34 +94,41 @@ public class Dictionary {
 	    return d[str1.length][str2.length];
 	}
 	
-	private List<String> search(String word, double fuzzyness) {    
+	/**
+	 * Performs a search based on a string that will match similar words
+	 * @param word The word to search for
+	 * @param fuzzyness Indicates how much tolerance the method should have for matching words
+	 * @return A List of Strings that are similar to the word given
+	 */
+	private List<String> fuzzySearch(String word, double fuzzyness) {    
+
 		List<String> foundWords = new ArrayList<String>();
 
-		    for (String s : wordList)
-		    {
-		        // Calculate the Levenshtein-distance:
-		        int levenshteinDistance =
-		            levenshteinDistance(word, s);
+	    for (String s : wordList) {
+	        // Calculate the Levenshtein distance:
+	        int levenshteinDistance = levenshteinDistance(word, s);
 
-		        // Length of the longer string:
-		        int length = Math.max(word.length(), s.length());
+	        // Length of the longer string:
+	        int length = Math.max(word.length(), s.length());
 
-		        // Calculate the score:
-		        double score = 1.0 - (double)levenshteinDistance / length;
+	        // Calculate the score:
+	        double score = 1.0 - (double)levenshteinDistance / length;
 
-		        // Match?
-		        if (score > fuzzyness)
-		            foundWords.add(s);
-		    }
-		    return foundWords;
-		}
+	        // Match?
+	        if (score > fuzzyness) {
+	            foundWords.add(s);
+	        }
+	    }
+	    
+	    return foundWords;
+	}
 	
 	public static void main(String[] args) {
 		System.out.println(System.getProperty("user.dir"));
 		Dictionary dict = new Dictionary("el");
 		
 		int dist = levenshteinDistance("Καλημέρα", "Καλυμέρα");
-		List<String> options = dict.search("καλιμέρα", 0.7); 
+		List<String> options = dict.fuzzySearch("καλιμέρα", 0.7); 
 		
 		System.out.println(options);
 	}
