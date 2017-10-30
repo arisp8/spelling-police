@@ -11,7 +11,6 @@ public class Dictionary {
 	private List<String> wordList;
 
 	/** Default constructor for Dictionaries
-	 *
 	 * @param language The language of the dictionary to load
 	 */
 	public Dictionary(String language) {
