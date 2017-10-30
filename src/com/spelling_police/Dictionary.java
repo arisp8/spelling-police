@@ -24,6 +24,7 @@ public class Dictionary {
 	 * Reads a dictionary from a file and converts it to an ArrayList
 	 * @param filePath The path where the dictionary file should be found
 	 * @return Returns an array list containing all words from the dictionary
+	 *
 	 */
 	private List<String> readDictionary(String filePath) {
 		List<String> words = new ArrayList<>();
