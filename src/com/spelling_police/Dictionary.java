@@ -126,10 +126,10 @@ public class Dictionary {
 		System.out.println(System.getProperty("user.dir"));
 		Dictionary dict = new Dictionary("el");
 
-		int dist = levenshteinDistance("Καλημέρα", "Καλυμέρα");
-		List<String> options = dict.fuzzySearch("καλιμέρα", 0.7);
+		int dist = levenshteinDistance("ΓΓ΅Γ«Γ§Γ¬ΓΓ±Γ΅", "ΓΓ΅Γ«ΓµΓ¬ΓΓ±Γ΅");
+		List<String> options = dict.fuzzySearch("ΓªΓ΅Γ«Γ©Γ¬ΓΓ±Γ΅", 0.7);
 
-		System.out.println(options);
+		System.out.println(options.subList(0,5));
 	}
 
 }
