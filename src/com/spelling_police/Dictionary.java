@@ -4,19 +4,44 @@ import java.util.List;
 import java.util.Scanner;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Dictionary {
 
 	private String language;
 	private List<String> wordList;
-
+	private HashMap<String, String> config;
+	
 	/** Default constructor for Dictionaries
 	 * @param language The language of the dictionary to load
 	 */
 	public Dictionary(String language) {
 		this.language = language;
 		String path = System.getProperty("user.dir") + "\\resources\\dictionaries\\" + language + ".txt";
-		this.wordList = readDictionary(path);
+		System.out.println(path);
+		String configPath = System.getProperty("user.dir") + "\\resources\\config\\" + language + ".info";
+		
+		this.config = getConfig(configPath);
+		String encoding = this.config.get("encoding");
+		
+		this.wordList = readDictionary(path, encoding);
+	}
+	
+	private HashMap<String, String> getConfig(String filePath) {
+		HashMap<String, String> config = new HashMap<String, String>();
+		
+		try (Scanner scan  = new Scanner(new File(filePath), "utf-8")) {
+			while (scan.hasNext()) {
+				String line = scan.next();
+				String[] components = line.split(":");
+				config.put(components[0], components[1]);
+			}
+		} catch (Exception e) {
+			System.out.println("Something went wrong when opening config file: " + e.getMessage());
+		}
+		
+		
+		return config;
 	}
 
 	/**
@@ -24,10 +49,10 @@ public class Dictionary {
 	 * @param filePath The path where the dictionary file should be found
 	 * @return Returns an array list containing all words from the dictionary
 	 */
-	private List<String> readDictionary(String filePath) {
+	private List<String> readDictionary(String filePath, String encoding) {
 		List<String> words = new ArrayList<>();
-
-		try (Scanner scan  = new Scanner(new File(filePath))) {
+		
+		try (Scanner scan  = new Scanner(new File(filePath), encoding)) {
 			while (scan.hasNext()) {
 				words.add(scan.next());
 			}
@@ -102,7 +127,7 @@ public class Dictionary {
 	private List<String> fuzzySearch(String word, double fuzzyness) {
 
 		List<String> foundWords = new ArrayList<String>();
-
+		
 	    for (String s : wordList) {
 	        // Calculate the Levenshtein distance:
 	        int levenshteinDistance = levenshteinDistance(word, s);
@@ -123,13 +148,12 @@ public class Dictionary {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(System.getProperty("user.dir"));
 		Dictionary dict = new Dictionary("el");
+		
+		List<String> options = dict.fuzzySearch("ώσμωσυ", 0.6);
 
-		int dist = levenshteinDistance("ÊáëçìÝñá", "ÊáëõìÝñá");
-		List<String> options = dict.fuzzySearch("êáëéìÝñá", 0.7);
-
-		System.out.println(options.subList(0,5));
+		System.out.println(options.subList(0,3));
+		
 	}
 
 }
