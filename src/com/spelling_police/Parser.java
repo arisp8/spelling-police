@@ -8,6 +8,12 @@ import java.util.Scanner;
  */
 public class Parser {
 	
+	private String language;
+	
+	public Parser(String language) {
+		this.language = language;
+	}
+	
 	//Separate : the method which splits the Strings 
 	public String[] seperate(String period){
 		//Creation of a table the same size as the number of the words in the period.
@@ -25,7 +31,7 @@ public class Parser {
 		Scanner input = new Scanner(System.in);
 		System.out.println("Insert Text : ");
 		String period = input.nextLine();
-		Parser obj = new Parser();
+		Parser obj = new Parser("el");
 		obj.seperate(period);
 		input.close();
 	}
