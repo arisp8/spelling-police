@@ -68,7 +68,7 @@ public class Dictionary {
 	 * @param word The word to check
 	 * @return A boolean indicating whether or not the word exists
 	 */
-	private boolean wordExists(String word) {
+	public boolean wordExists(String word) {
 		if (this.wordList.contains(word)) {
 			return true;
 		} else {
@@ -150,7 +150,7 @@ public class Dictionary {
 	public static void main(String[] args) {
 		Dictionary dict = new Dictionary("el");
 		
-		List<String> options = dict.fuzzySearch("ώσμωσυ", 0.6);
+		List<String> options = dict.fuzzySearch("Ώσμωσυ", 0.6);
 
 		System.out.println(options.subList(0,3));
 		
