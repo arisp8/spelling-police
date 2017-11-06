@@ -11,7 +11,7 @@ public class Dictionary {
 	private String language;
 	private List<String> wordList;
 	private HashMap<String, String> config;
-	
+
 	/** Default constructor for Dictionaries
 	 * @param language The language of the dictionary to load
 	 */
@@ -20,16 +20,16 @@ public class Dictionary {
 		String path = System.getProperty("user.dir") + "\\resources\\dictionaries\\" + language + ".txt";
 		System.out.println(path);
 		String configPath = System.getProperty("user.dir") + "\\resources\\config\\" + language + ".info";
-		
+
 		this.config = getConfig(configPath);
 		String encoding = this.config.get("encoding");
-		
+
 		this.wordList = readDictionary(path, encoding);
 	}
-	
+
 	private HashMap<String, String> getConfig(String filePath) {
 		HashMap<String, String> config = new HashMap<String, String>();
-		
+
 		try (Scanner scan  = new Scanner(new File(filePath), "utf-8")) {
 			while (scan.hasNext()) {
 				String line = scan.next();
@@ -39,8 +39,8 @@ public class Dictionary {
 		} catch (Exception e) {
 			System.out.println("Something went wrong when opening config file: " + e.getMessage());
 		}
-		
-		
+
+
 		return config;
 	}
 
@@ -51,7 +51,7 @@ public class Dictionary {
 	 */
 	private List<String> readDictionary(String filePath, String encoding) {
 		List<String> words = new ArrayList<>();
-		
+
 		try (Scanner scan  = new Scanner(new File(filePath), encoding)) {
 			while (scan.hasNext()) {
 				words.add(scan.next());
@@ -127,7 +127,7 @@ public class Dictionary {
 	private List<String> fuzzySearch(String word, double fuzzyness) {
 
 		List<String> foundWords = new ArrayList<String>();
-		
+
 	    for (String s : wordList) {
 	        // Calculate the Levenshtein distance:
 	        int levenshteinDistance = levenshteinDistance(word, s);
@@ -146,14 +146,33 @@ public class Dictionary {
 
 	    return foundWords;
 	}
+  private List<String> similarList (String word , int limit){
+
+		List<String> similarList = new ArrayList<String>();
+
+        Dictionary dict = new Dictionary ("el");
+
+        //defines fuzzyness
+        double fuzzyness = 0.97;
+
+       do {
+           similarList = dict.fuzzySearch(word,fuzzyness);
+
+		   fuzzyness -= 0.05;
+		} while(similarList.size() < limit);
+
+        similarList = similarList.subList(0,limit);
+
+        return similarList;
+		}
 
 	public static void main(String[] args) {
-		Dictionary dict = new Dictionary("el");
-		
-		List<String> options = dict.fuzzySearch("Ώσμωσυ", 0.6);
+		System.out.println(System.getProperty("user.dir"));
+        Dictionary dict = new Dictionary("el");
 
-		System.out.println(options.subList(0,3));
-		
+        List<String> option= dict.similarList("προειδοπίηση",5);
+
+		System.out.println(option);
 	}
 
 }
