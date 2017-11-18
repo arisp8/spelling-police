@@ -5,7 +5,7 @@ public class SpellChecker {
 
 	private String language;
 	/** Default constructor for SpellChecker
-	* @param lannguage The language of the dictionary
+	* @param language The language of the dictionary
 	*/
 
 	public SpellChecker(String language) {
@@ -16,20 +16,40 @@ public class SpellChecker {
 	 * @param input A single word or a phrase 
 	 * @return A list of words that are wrong and weren't found in the Dictionary
 	*/
-	private ArrayList<String> findMistakes(String input) {
-		ArrayList<String> mistakes = new ArrayList<String>();
+	public ArrayList<Mistake> findMistakes(String input) {
+		ArrayList<Mistake> mistakesArray = new ArrayList<Mistake>();
 		Parser parser = new Parser(language);
 		String[] words = parser.seperate(input);
-		Dictionary dict = new Dictionary(language);
 		for(int i = 0; i < words.length; i++) {
-			boolean exists = dict.wordExists(words[i]);
-			if (!exists) {
-				mistakes.add(words[i]);
+			Mistake singleWord = singleWordCheck(words[i]);
+			if (singleWord!=null) {
+				mistakesArray.add(singleWord);
 			}
 		}
-		return mistakes;
+		return mistakesArray;
 	}
 	
+	
+	/** Method that checks a single word every time findMistakes method calls it
+	 * @param checkWord the word to be checked
+	 *@return a Mistake object if the word is not contained in the dictionary or null if the word is contained
+	 */
+	public Mistake singleWordCheck(String checkWord)
+	{
+		Dictionary dict = new Dictionary(language);
+		Mistake wrongWord = new Mistake(checkWord);
+		boolean exists = dict.wordExists(checkWord);
+		if (!exists){
+			return wrongWord;
+		} else {
+			return null;
+		}
+	}
+	
+	
+	
+	
+	// Just to check that everithing works fine
 	public static void main(String[] args) {
 		SpellChecker test = new SpellChecker("el");
 		ArrayList<String> test2 = test.findMistakes("παρασκεβή πηγαίνο βόλτα");
