@@ -21,7 +21,7 @@ public class Parser {
 		
 		//Inserts the words in order into the table.
 		for (int i=0;i<words.length;i++){
-			words[i] = words[i].replaceAll("[^\\w]" , "");
+			words[i] = words[i].replaceAll("[.!;\\-?:]", " ");
 		}
 		//Returns the table.
 		return words;
@@ -35,7 +35,7 @@ public class Parser {
 		String[] periodSplit = obj.seperate(period);
 		
 		for (int i = 0; i < periodSplit.length; i++) {
-				System.out.println(periodSplit[i]);
+			System.out.println(periodSplit[i]);
 		}
 		input.close();
 	}
