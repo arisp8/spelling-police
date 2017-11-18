@@ -21,7 +21,7 @@ public class Parser {
 		
 		//Inserts the words in order into the table.
 		for (int i=0;i<words.length;i++){
-			words[i] = words[i].replaceAll("[.!;\\-?:]", " ");
+			words[i] = words[i].replaceAll("[.!;\\-?:]", "");
 		}
 		//Returns the table.
 		return words;
