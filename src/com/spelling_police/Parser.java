@@ -32,7 +32,11 @@ public class Parser {
 		System.out.println("Insert Text : ");
 		String period = input.nextLine();
 		Parser obj = new Parser("el");
-		obj.seperate(period);
+		String[] periodSplit = obj.seperate(period);
+		
+		for (int i = 0; i < periodSplit.length; i++) {
+				System.out.println(periodSplit[i]);
+		}
 		input.close();
 	}
 }
