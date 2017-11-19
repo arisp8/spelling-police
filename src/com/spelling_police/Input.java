@@ -1,5 +1,6 @@
+package com.spelling_police;
 /**
- * @class 
+ * @class
  * Reads a text from user's keyboard or uploaded file
  */
 import java.util.Scanner;
@@ -20,7 +21,7 @@ public class Input {
 		String text = in.nextLine();
 		return text;
 	}
-	
+
 	/**
 	 *read from file
 	 *@return String text
