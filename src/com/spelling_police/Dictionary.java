@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.Scanner;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.TreeSet;
 import java.util.HashMap;
 
 public class Dictionary {
 
 	private String language;
-	private List<String> wordList;
+	private TreeSet<String> wordList;
 	private HashMap<String, String> config;
 
 	/** Default constructor for Dictionaries
@@ -18,7 +19,6 @@ public class Dictionary {
 	public Dictionary(String language) {
 		this.language = language;
 		String path = System.getProperty("user.dir") + "\\resources\\dictionaries\\" + language + ".txt";
-		System.out.println(path);
 		String configPath = System.getProperty("user.dir") + "\\resources\\config\\" + language + ".info";
 
 		this.config = getConfig(configPath);
@@ -49,15 +49,16 @@ public class Dictionary {
 	 * @param filePath The path where the dictionary file should be found
 	 * @return Returns an array list containing all words from the dictionary
 	 */
-	private List<String> readDictionary(String filePath, String encoding) {
-		List<String> words = new ArrayList<>();
+	private TreeSet<String> readDictionary(String filePath, String encoding) {
+		TreeSet<String> words = new TreeSet<>();
 
 		try (Scanner scan  = new Scanner(new File(filePath), encoding)) {
 			while (scan.hasNext()) {
 				words.add(scan.next());
 			}
 		} catch (Exception e) {
-			System.out.println("An exception has happened: " + e.getMessage());
+			System.out.println("An exception has happened while reading the dictionary: " 
+								+ e.getMessage());
 		}
 
 		return words;
@@ -78,13 +79,13 @@ public class Dictionary {
 
 	/**
 	 * Calculates the distance between 2 Strings, showing how many differences they have
-	 * @param src The first String to compare
-	 * @param dest The String that's compared to the first one
-	 * @return Returns an integer showing the distance between the 2 strings
+	 * @param src  The word which will be compered
+	 * @param dest Each String of the dictionary
+	 * @return     Returns an integer showing the distance between the 2 strings
 	 */
 	private static int levenshteinDistance(String src, String dest)
 	{
-	    int[][] d = new int[src.length() + 1][dest.length() + 1];
+		int[][] d = new int[src.length() + 1][dest.length() + 1];
 	    int i, j, cost;
 	    char[] str1 = src.toCharArray();
 	    char[] str2 = dest.toCharArray();
@@ -116,7 +117,7 @@ public class Dictionary {
 	    }
 
 	    return d[str1.length][str2.length];
-	}
+    }
 
 	/**
 	 * Performs a search based on a string that will match similar words
@@ -153,7 +154,7 @@ public class Dictionary {
         Dictionary dict = new Dictionary ("el");
 
         //defines fuzzyness
-        double fuzzyness = 0.97;
+        double fuzzyness = 0.80;
 
        do {
            similarList = dict.fuzzySearch(word,fuzzyness);
@@ -164,7 +165,7 @@ public class Dictionary {
         similarList = similarList.subList(0,limit);
 
         return similarList;
-		}
+	}
 
 	public static void main(String[] args) {
 		System.out.println(System.getProperty("user.dir"));
