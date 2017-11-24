@@ -50,8 +50,8 @@ public class Parser {
 	}
 
 	public static void main (String args[] ){
-		
 		Parser obj = new Parser("el");
+		String period = "Hey there!";
 		ArrayList<String> periodSplit = obj.seperate(period);
 	}
 }
