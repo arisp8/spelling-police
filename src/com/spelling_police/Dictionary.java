@@ -72,6 +72,8 @@ public class Dictionary {
 	public boolean wordExists(String word) {
 		if (this.wordList.contains(word)) {
 			return true;
+		} else if(this.wordList.contains(word.toLowerCase())) {
+			return true;
 		} else {
 			return false;
 		}
