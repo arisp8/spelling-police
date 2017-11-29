@@ -5,7 +5,6 @@ package com.spelling_police;
  */
 import java.util.Scanner;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -16,9 +15,11 @@ public class Input {
 	 * @return String text
 	 */
 	public static String keyboard() {
+
 		System.out.println("Please, write the text you want to check");
 		Scanner in = new Scanner(System.in);
-		String text = in.nextLine();
+		String text = in.nextLine();//read all user's text in one string
+		in.close();
 		return text;
 	}
 
@@ -26,12 +27,20 @@ public class Input {
 	 *read from file
 	 *@return String text
 	 */
-	public static String inFile() throws IOException {
-		Scanner inFile = new Scanner(System.in);
-		System.out.println("Enter the file name");
-		String fileName = inFile.nextLine();
-		BufferedReader buffread = new BufferedReader(new FileReader(fileName));
-		String text= buffread.readLine();
-		return text;
+	public static String inFile(String fileName){
+
+		try{
+			BufferedReader buffread = new BufferedReader(new FileReader(fileName));//declare BufferedReader object and instance it
+			String text= buffread.readLine();//get the text from file
+			buffread.close();
+			return text;
+		} catch(IOException ex){
+			System.out.println("Could not find file " );
+			return null;
 		}
+	}
+	public static void main(String args[]) {
+		String test = keyboard();
+		System.out.println(test);
+	}
 }
