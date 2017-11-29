@@ -12,7 +12,9 @@ public class Dictionary {
 	private String language;
 	private TreeSet<String> wordList;
 	private HashMap<String, String> config;
-
+	
+	private Thread loadThread;
+	
 	/** Default constructor for Dictionaries
 	 * @param language The language of the dictionary to load
 	 */
@@ -23,8 +25,15 @@ public class Dictionary {
 
 		this.config = getConfig(configPath);
 		String encoding = this.config.get("encoding");
-
-		this.wordList = readDictionary(path, encoding);
+		
+		loadThread = new Thread() {
+			public void run() {
+				wordList= readDictionary(path, encoding);
+				
+			}
+		};
+		loadThread.start();
+		// this.wordList = readDictionary(path, encoding);
 	}
 
 	private HashMap<String, String> getConfig(String filePath) {
@@ -70,6 +79,15 @@ public class Dictionary {
 	 * @return A boolean indicating whether or not the word exists
 	 */
 	public boolean wordExists(String word) {
+		
+		// Makes sure loading of dictionary has finished
+		try {
+			loadThread.join();
+		} catch (InterruptedException e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+		
 		if (this.wordList.contains(word)) {
 			return true;
 		} else if(this.wordList.contains(word.toLowerCase())) {
@@ -85,22 +103,24 @@ public class Dictionary {
 	 * @param dest Each String of the dictionary
 	 * @return     Returns an integer showing the distance between the 2 strings
 	 */
-	private static int levenshteinDistance(String src, String dest)
-		{
-		   int[][] distance = new int[src.length() + 1][dest.length() + 1];
+	private static int levenshteinDistance(String src, String dest) {
+		int[][] distance = new int[src.length() + 1][dest.length() + 1];
 
-		           for (int i = 0; i <= src.length(); i++){
-		               distance[i][0] = i; }
-		           for (int j = 1; j <= dest.length(); j++){
-		               distance[0][j] = j; }
+		for (int i = 0; i <= src.length(); i++) {
+			distance[i][0] = i; 
+		}
+		for (int j = 1; j <= dest.length(); j++) {
+			distance[0][j] = j;
+		}
 
-		           for (int i = 1; i <= src.length(); i++){
-		               for (int j = 1; j <= dest.length(); j++){
-		                          distance[i][j] = Math.min( distance[i - 1][j] + 1 , Math.min (distance[i][j - 1] + 1,
-		                                          distance[i - 1][j - 1] + ((src.charAt(i - 1) == dest.charAt(j - 1)) ? 0 : 1)));
-		   		       }
-		   	       }
-		         return( distance[src.length()][dest.length()]);
+		for (int i = 1; i <= src.length(); i++) {
+			for (int j = 1; j <= dest.length(); j++) {
+                  distance[i][j] = Math.min(distance[i - 1][j] + 1 , Math.min(distance[i][j - 1] + 1,
+                                  distance[i - 1][j - 1] + ((src.charAt(i - 1) == dest.charAt(j - 1)) ? 0 : 1)));
+			}
+		}
+		
+		return(distance[src.length()][dest.length()]);
     }
 
 	/**
@@ -110,8 +130,16 @@ public class Dictionary {
 	 * @return A List of Strings that are similar to the word given
 	 */
 	private List<String> fuzzySearch(String word, double fuzzyness) {
-
+		
 		List<String> foundWords = new ArrayList<String>();
+		
+		// Makes sure loading of dictionary has finished
+		try {
+			loadThread.join();
+		} catch (InterruptedException e) {
+			System.out.println(e.getMessage());
+			return foundWords;
+		}
 
 	    for (String s : wordList) {
 	        // Calculate the Levenshtein distance:
