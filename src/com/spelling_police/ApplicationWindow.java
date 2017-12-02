@@ -7,6 +7,7 @@ import javax.swing.border.EmptyBorder;
 
 import java.awt.Dimension;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 //import java.awt.event.*;
 
@@ -24,31 +25,44 @@ public class ApplicationWindow {
  
         JLabel fileLabel = new JLabel("File");
         JLabel optionsLabel = new JLabel("Options");
-    	fileLabel.setBorder(new EmptyBorder(10, 10, 15, 0));
-    	optionsLabel.setBorder(new EmptyBorder(10, 0, 15, 10));
+    	
+        // Set padding for the top buttons
+        fileLabel.setBorder(new EmptyBorder(10, 10, 10, 0));
+    	optionsLabel.setBorder(new EmptyBorder(10, 0, 10, 10));
         
+    	// Increase label font size
+    	fileLabel.setFont(fileLabel.getFont().deriveFont(16.0f));
+    	optionsLabel.setFont(optionsLabel.getFont().deriveFont(16.0f));
+    	
+    	// Set gray text color for the labels
+    	fileLabel.setForeground(Color.decode("#666666"));
+    	optionsLabel.setForeground(Color.decode("#666666"));
+    	
         JLabel fileIcon = new JLabel(new ImageIcon(imagesPath + "File.png"));
         JLabel textIcon = new JLabel(new ImageIcon(imagesPath + "Text.png"));
         JLabel linkIcon = new JLabel(new ImageIcon(imagesPath + "Link.png"));
         JLabel imageIcon = new JLabel(new ImageIcon(imagesPath + "Image.png"));
-        
+
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
         topPanel.add(fileLabel, BorderLayout.LINE_START);
         topPanel.add(optionsLabel, BorderLayout.LINE_END);
+        topPanel.setBackground(Color.decode("#ebebeb"));
         
         JPanel topGroupPanel = new JPanel();
         topGroupPanel.add(textIcon, BorderLayout.WEST);
         topGroupPanel.add(fileIcon, BorderLayout.EAST);
+        topGroupPanel.setBackground(Color.WHITE);
         
         JPanel bottomGroupPanel = new JPanel();
         bottomGroupPanel.add(linkIcon, BorderLayout.WEST);
         bottomGroupPanel.add(imageIcon, BorderLayout.EAST);
+        bottomGroupPanel.setBackground(Color.WHITE);
         
     	frame.getContentPane().add(topPanel, BorderLayout.PAGE_START);
     	frame.getContentPane().add(topGroupPanel, BorderLayout.CENTER);
     	frame.getContentPane().add(bottomGroupPanel, BorderLayout.AFTER_LAST_LINE);
-        //Display the window.
+    	//Display the window.
         frame.setSize(800, 800);
         frame.setVisible(true);
     }
