@@ -22,6 +22,9 @@ public class ApplicationWindow {
         //Create and set up the window.
         JFrame frame = new JFrame("Spelling Police");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        ImageIcon img = new ImageIcon(imagesPath + "Logo.png");
+        frame.setIconImage(img.getImage());
  
         JLabel fileLabel = new JLabel("File");
         JLabel optionsLabel = new JLabel("Options");
