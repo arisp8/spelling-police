@@ -57,7 +57,7 @@ public class ApplicationWindow {
         topPanel.setLayout(new BorderLayout());
         topPanel.add(fileLabel, BorderLayout.LINE_START);
         topPanel.add(optionsLabel, BorderLayout.LINE_END);
-        topPanel.setBackground(Color.decode("#ebebeb"));
+        topPanel.setBackground(Color.WHITE);
         
         JPanel topGroupPanel = new JPanel();
         topGroupPanel.add(textIcon, BorderLayout.WEST);

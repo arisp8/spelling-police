@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -21,7 +22,8 @@ public class TopMenuListener implements MouseListener {
 		originalBorder = (EmptyBorder) this.label.getBorder();
 		System.out.println(originalBorder.getBorderInsets());
 		if (hoverBorder == null) {
-			Border beveledBorder = BorderFactory.createLoweredSoftBevelBorder();
+			Border beveledBorder = BorderFactory.createSoftBevelBorder(BevelBorder.RAISED, 
+					Color.decode("#666666"), Color.decode("#ebebeb"));
 			System.out.println(originalBorder.getBorderInsets());
 			Insets insets = originalBorder.getBorderInsets();
 			
