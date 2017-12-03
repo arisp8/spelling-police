@@ -24,21 +24,13 @@ import javax.swing.border.EmptyBorder;
 public class LabelListener implements MouseListener {
 	
 	private JLabel label;
-	private static Border hoverBorder;
 	private static String imagesPath = System.getProperty("user.dir") + "\\resources\\images\\";
 	private ImageIcon defaultIcon;
 	private ImageIcon hoverIcon;
 	
 	public LabelListener(JLabel label) {
 		this.label = label;
-		
-		// Initialize on mouse over border if it hasn't yet
-		if (hoverBorder == null) {
-			hoverBorder = BorderFactory.createLineBorder(Color.decode("#ccc"));
-		}
-		
 		defaultIcon = (ImageIcon) this.label.getIcon();
-	
 	}
 
 	@Override
