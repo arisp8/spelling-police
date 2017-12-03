@@ -30,12 +30,15 @@ public class ApplicationWindow {
         JLabel optionsLabel = new JLabel("Options");
     	
         // Set padding for the top buttons
-        fileLabel.setBorder(new EmptyBorder(10, 10, 10, 0));
-    	optionsLabel.setBorder(new EmptyBorder(10, 0, 10, 10));
+        fileLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
+    	optionsLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
         
     	// Increase label font size
     	fileLabel.setFont(fileLabel.getFont().deriveFont(16.0f));
     	optionsLabel.setFont(optionsLabel.getFont().deriveFont(16.0f));
+    	
+    	fileLabel.addMouseListener(new TopMenuListener(fileLabel));
+    	optionsLabel.addMouseListener(new TopMenuListener(optionsLabel));
     	
     	// Set gray text color for the labels
     	fileLabel.setForeground(Color.decode("#666666"));
