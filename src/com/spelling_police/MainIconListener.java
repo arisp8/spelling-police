@@ -21,14 +21,14 @@ import javax.swing.JLabel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-public class LabelListener implements MouseListener {
+public class MainIconListener implements MouseListener {
 	
 	private JLabel label;
 	private static String imagesPath = System.getProperty("user.dir") + "\\resources\\images\\";
 	private ImageIcon defaultIcon;
 	private ImageIcon hoverIcon;
 	
-	public LabelListener(JLabel label) {
+	public MainIconListener(JLabel label) {
 		this.label = label;
 		defaultIcon = (ImageIcon) this.label.getIcon();
 	}
