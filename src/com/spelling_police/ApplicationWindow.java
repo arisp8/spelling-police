@@ -42,7 +42,11 @@ public class ApplicationWindow {
         JLabel textIcon = new JLabel(new ImageIcon(imagesPath + "Text.png"));
         JLabel linkIcon = new JLabel(new ImageIcon(imagesPath + "Link.png"));
         JLabel imageIcon = new JLabel(new ImageIcon(imagesPath + "Image.png"));
-
+        fileIcon.addMouseListener(new LabelListener(fileIcon));
+        textIcon.addMouseListener(new LabelListener(textIcon));
+        linkIcon.addMouseListener(new LabelListener(linkIcon));
+        imageIcon.addMouseListener(new LabelListener(imageIcon));
+        
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
         topPanel.add(fileLabel, BorderLayout.LINE_START);
