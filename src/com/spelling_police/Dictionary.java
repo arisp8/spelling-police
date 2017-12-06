@@ -99,7 +99,7 @@ public class Dictionary {
 
 	/**
 	 * Calculates the distance between 2 Strings, showing how many differences they have
-	 * @param src  The word which will be compered
+	 * @param src  The word which will be compared
 	 * @param dest Each String of the dictionary
 	 * @return     Returns an integer showing the distance between the 2 strings
 	 */
@@ -127,11 +127,11 @@ public class Dictionary {
 	 * Performs a search based on a string that will match similar words
 	 * @param word The word to search for
 	 * @param fuzzyness Indicates how much tolerance the method should have for matching words
-	 * @return A List of Strings that are similar to the word given
+	 * @return A HashMap of Strings and Integers with similar words and each levenshtein distance 
 	 */
-	private List<String> fuzzySearch(String word, double fuzzyness) {
+	private HashMap<String,Integer> fuzzySearch(String word, double fuzzyness) {
 		
-		List<String> foundWords = new ArrayList<String>();
+		HashMap<String,Integer> foundWords = new HashMap<String,Integer>();
 		
 		// Makes sure loading of dictionary has finished
 		try {
@@ -153,12 +153,13 @@ public class Dictionary {
 
 	        // Match?
 	        if (score > fuzzyness) {
-	            foundWords.add(s);
+	            foundWords.put(s,levenshteinDistance);
 	        }
 	    }
 
 	    return foundWords;
 	}
+	 
   private List<String> similarList (String word , int limit){
 
 		List<String> similarList = new ArrayList<String>();
