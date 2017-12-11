@@ -36,7 +36,8 @@ public class UrlContentReader {
   }
     
     public static void main(String[] args) {
-      String test = extractURLContents("https://google.gr");
-      System.out.println(CustomHTMLParser.removeTags(test));
+      String test = extractURLContents("https://en.wikipedia.org/wiki/Athens_University_of_Economics_and_Business");
+      String clean = CustomHTMLParser.removeTags(test);
+      System.out.println("Clean text: " + clean);
     }
 }

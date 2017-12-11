@@ -13,12 +13,14 @@ public class CustomHTMLParser {
      *@return String text
      */
     public static String removeTags(String text) {
-    	// First we remove all script and style tags along with their contents and then we
-    	// remove all the other tags while keeping the content between them.
-    	// As a final step we replace all sequences of whitespace to single spaces.
-    	String txt = text.replaceAll("<script[^<]*(?:(?!</script>)<[^<]*)*</script>", " ")
-          .replaceAll("<style[^<]*(?:(?!</style>)<[^<]*)*</style>", " ").replaceAll("\\<[^>]*>","")
-          .replaceAll("\\s+", " ");
+    	// First we remove all script and style tags along with their contents.
+    	String txt = text.replaceAll("<script[^<]*(?:(?!<\\/script>)<[^<]*)*<\\/script>", " ");
+    	txt = txt.replaceAll("<style[^<]*(?:(?!<\\/style>)<[^<]*)*<\\/style>", " ");
+    	// Then we remove all the other tags while keeping the content between them.
+    	txt = txt.replaceAll("\\<[^>]*>", " ");
+    	// As a final step we replace all sequences of 2 or more spaces to single spaces.
+		txt = txt.trim().replaceAll("\\s{2,}", "\0");
+    	
     	return txt;
     }
 }
