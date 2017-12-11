@@ -6,15 +6,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeSet;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class Dictionary {
 
 	private String language;
 	private TreeSet<String> wordList;
 	private HashMap<String, String> config;
-	
+
 	private Thread loadThread;
-	
+
 	/** Default constructor for Dictionaries
 	 * @param language The language of the dictionary to load
 	 */
@@ -25,11 +28,11 @@ public class Dictionary {
 
 		this.config = getConfig(configPath);
 		String encoding = this.config.get("encoding");
-		
+
 		loadThread = new Thread() {
 			public void run() {
 				wordList= readDictionary(path, encoding);
-				
+
 			}
 		};
 		loadThread.start();
@@ -79,7 +82,7 @@ public class Dictionary {
 	 * @return A boolean indicating whether or not the word exists
 	 */
 	public boolean wordExists(String word) {
-		
+
 		// Makes sure loading of dictionary has finished
 		try {
 			loadThread.join();
@@ -87,7 +90,7 @@ public class Dictionary {
 			System.out.println(e.getMessage());
 			return false;
 		}
-		
+
 		if (this.wordList.contains(word)) {
 			return true;
 		} else if(this.wordList.contains(word.toLowerCase())) {
@@ -107,7 +110,7 @@ public class Dictionary {
 		int[][] distance = new int[src.length() + 1][dest.length() + 1];
 
 		for (int i = 0; i <= src.length(); i++) {
-			distance[i][0] = i; 
+			distance[i][0] = i;
 		}
 		for (int j = 1; j <= dest.length(); j++) {
 			distance[0][j] = j;
@@ -119,7 +122,7 @@ public class Dictionary {
                                   distance[i - 1][j - 1] + ((src.charAt(i - 1) == dest.charAt(j - 1)) ? 0 : 1)));
 			}
 		}
-		
+
 		return(distance[src.length()][dest.length()]);
     }
 
@@ -127,12 +130,12 @@ public class Dictionary {
 	 * Performs a search based on a string that will match similar words
 	 * @param word The word to search for
 	 * @param fuzzyness Indicates how much tolerance the method should have for matching words
-	 * @return A HashMap of Strings and Integers with similar words and each levenshtein distance 
+	 * @return A HashMap of Strings and Integers with similar words and each levenshtein distance
 	 */
 	private HashMap<String,Integer> fuzzySearch(String word, double fuzzyness) {
-		
+
 		HashMap<String,Integer> foundWords = new HashMap<String,Integer>();
-		
+
 		// Makes sure loading of dictionary has finished
 		try {
 			loadThread.join();
@@ -159,32 +162,47 @@ public class Dictionary {
 
 	    return foundWords;
 	}
-	 
+
   private List<String> similarList (String word , int limit){
 
-		List<String> similarList = new ArrayList<String>();
 
+        HashMap<String,Integer> foundWords = new HashMap<String,Integer>();
         Dictionary dict = new Dictionary ("el");
 
         //defines fuzzyness
         double fuzzyness = 0.80;
 
        do {
-           similarList = dict.fuzzySearch(word,fuzzyness);
+           foundWords = dict.fuzzySearch(word,fuzzyness);
 
 		   fuzzyness -= 0.05;
-		} while(similarList.size() < limit);
+		} while(foundWords.size() < limit);
 
-        similarList = similarList.subList(0,limit);
+		 Object[] a = foundWords.entrySet().toArray();
+		 Arrays.sort(a, new Comparator() {
+		     public int compare(Object o1, Object o2) {
+		         return ((Map.Entry<String, Integer>) o2).getValue()
+		                    .compareTo(((Map.Entry<String, Integer>) o1).getValue());
+		     }
+		 });
+		 List<String> similarList = new ArrayList<String>();
+		 
+		 for (int i = (a.length -1); i > (a.length - limit); i--) {
+			similarList.add(((Map.Entry<String, Integer>) a[i]).getKey());
+		 }
+
+		
 
         return similarList;
 	}
+
+
 
 	public static void main(String[] args) {
 		System.out.println(System.getProperty("user.dir"));
         Dictionary dict = new Dictionary("el");
 
-        List<String> option= dict.similarList("προειδοπίηση",5);
+        List<String> option= dict.similarList("����",5);
 
 		System.out.println(option);
 	}
