@@ -23,16 +23,15 @@ public class Dictionary {
 	 */
 	public Dictionary(String language) {
 		this.language = language;
-		String path = System.getProperty("user.dir") + "\\resources\\dictionaries\\" + language + ".txt";
+		final String path = System.getProperty("user.dir") + "\\resources\\dictionaries\\" + language + ".txt";
 		String configPath = System.getProperty("user.dir") + "\\resources\\config\\" + language + ".info";
 
 		this.config = getConfig(configPath);
-		String encoding = this.config.get("encoding");
+		final String encoding = this.config.get("encoding");
 
 		loadThread = new Thread() {
 			public void run() {
-				wordList= readDictionary(path, encoding);
-
+				wordList = readDictionary(path, encoding);
 			}
 		};
 		loadThread.start();
@@ -163,7 +162,7 @@ public class Dictionary {
 	    return foundWords;
 	}
 
-  private List<String> similarList (String word , int limit){
+  public List<String> similarList (String word , int limit){
 
 
         HashMap<String,Integer> foundWords = new HashMap<String,Integer>();
@@ -202,7 +201,7 @@ public class Dictionary {
 		System.out.println(System.getProperty("user.dir"));
         Dictionary dict = new Dictionary("el");
 
-        List<String> option= dict.similarList("несю",5);
+        List<String> option= dict.similarList("пїЅпїЅпїЅпїЅ",5);
 
 		System.out.println(option);
 	}
