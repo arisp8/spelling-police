@@ -1,3 +1,5 @@
+package com.spelling_police;
+
 import java.net.URL;
 import java.net.URLConnection;
 import java.io.BufferedReader;
