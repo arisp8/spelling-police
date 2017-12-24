@@ -1,5 +1,6 @@
 package com.spelling_police;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SpellChecker {
 
@@ -25,13 +26,18 @@ public class SpellChecker {
 	public ArrayList<Mistake> findMistakes(String input) {
 		
 		ArrayList<Mistake> mistakes = new ArrayList<Mistake>();
-		
-		ArrayList<String> words = parser.seperate(input);
-		for(String word : words) {
-			Mistake singleWord = singleWordCheck(word);
-			if (singleWord != null) {
-				mistakes.add(singleWord);
+		ArrayList<ArrayList<String>> sentences = parser.separate(input);
+		int sentence_count = 1;
+		for(List<String> sentence : sentences) {
+			int word_count = 1;
+			for (String word : sentence) {
+				Mistake singleWord = singleWordCheck(word, sentence_count, word_count);
+				if (singleWord != null) {
+					mistakes.add(singleWord);
+				}
+				word_count++;
 			}
+			sentence_count++;
 		}
 		return mistakes;
 	}
@@ -41,9 +47,9 @@ public class SpellChecker {
 	 * @param checkWord the word to be checked
 	 *@return a Mistake object if the word is not contained in the dictionary or null if the word is contained
 	 */
-	public Mistake singleWordCheck(String word) {
+	public Mistake singleWordCheck(String word, int sentence, int position) {
 		if (!dict.wordExists(word)){
-			Mistake wrongWord = new Mistake(word);
+			Mistake wrongWord = new Mistake(word, this.language, sentence, position);
 			return wrongWord;
 		} else {
 			return null;

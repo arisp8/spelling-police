@@ -13,9 +13,12 @@ public class Mistake {
 	private List<Integer> wrongPositions;
 	private static HashMap<String, Dictionary> dictionary;
 	
-	//constructor
+	private int position;
+	private int sentence;
 	public Mistake(String word, String language, int sentence, int position){
 		this.word = word;
+		this.sentence = sentence;
+		this.position = position;
 		
 		if (dictionary == null) {
 			dictionary = new HashMap<String, Dictionary>();
@@ -112,13 +115,17 @@ public class Mistake {
 		return words;
 	}
 	
+	public String toString() {
+		return this.word + "(" + this.sentence + ", " + this.position + ")";
+	}
+	
 	public static void main(String[]args){
 		
-		Mistake test = new Mistake("γυμναστριο", "el", 1, 1);
+		Mistake test = new Mistake("οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½", "el", 1, 1);
 		System.out.println(test.getSuggestions());
 		System.out.println(test.getWrongPosition());
 		
-		Mistake test2 = new Mistake("καλιμέρα", "el", 1, 1);
+		Mistake test2 = new Mistake("οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½", "el", 1, 1);
 		System.out.println(test2.getSuggestions());
 		System.out.println(test2.getWrongPosition());
 		

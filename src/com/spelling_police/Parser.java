@@ -1,7 +1,6 @@
 package com.spelling_police;
 
 import java.util.*;
-import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 /*
@@ -19,7 +18,7 @@ public class Parser {
 /*A privat method that seperates a given text/string into individual periods and
 * inserts them in an ArrayList.
 */
-	private  ArrayList<String> parseText(String text) {
+	private  ArrayList<String> splitIntoSentences(String text) {
 			ArrayList<String> periods = new ArrayList<String>();
 			String[] arrayPeriods = text.split("[\\.\\!\\?\\;]");
 
@@ -28,6 +27,7 @@ public class Parser {
 		    }
 			return periods;
 	}
+	
 
 	/* isWord: A method to determine if the element in question is a word or not and returns
 	 *those that are.
@@ -41,37 +41,29 @@ public class Parser {
 		Matcher matcher = pattern.matcher(element);
 		return !matcher.find();
 	}
-	// Separate : the method which splits the Strings into individual words.
-	public ArrayList<String> seperate(String period){
-		//Creation of an Array the same size as the number of the words in the period.
-		String elements[] = period.split("\\s+");
-
-		ArrayList<String> words = new ArrayList<String>();
-
-		//Inserts only the word elements into the list.
-		for (int i=0; i < elements.length; i++){
-			elements[i] = elements[i].replaceAll("[-.,!;?:\\(\\)\\[\\]]", "");
-
-			if (isWord(elements[i])) {
-				words.add(elements[i]);
-			}
-		}
-		//Returns the list.
-		return words;
-	}
-
-	public static void main (String args[] ){
-
-		Scanner input = new Scanner(System.in);
-
-		Parser textParser = new Parser("el");
-
-		System.out.println("Input text please");
-		String testText = input.nextLine();
-		ArrayList<String> splittedText = textParser.parseText(testText);
-
-		Parser periodParser = new Parser("el");
+	
+	// Splits text into individual sentences & words.
+	public ArrayList<ArrayList<String>> separate(String text){
 		
-		ArrayList<String> splittedPeriods = periodParser.seperate(testText);
+		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+		
+		ArrayList<String> sentences = this.splitIntoSentences(text);
+		for (String sentence : sentences) {
+			
+			String[] elements  = sentence.split("\\s+");
+			ArrayList<String> words = new ArrayList<String>();
+			
+			for (int i=0; i < elements.length; i++){
+				elements[i] = elements[i].replaceAll("[-.,!;?:\\(\\)\\[\\]]", "");
+
+				if (isWord(elements[i])) {
+					words.add(elements[i]);
+				}
+			}
+			result.add(words);
+		}
+		
+		return result;
 	}
+
 }
