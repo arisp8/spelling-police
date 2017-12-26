@@ -102,17 +102,23 @@ public class ApplicationWindow implements MouseListener {
         bottomGroupPanel.add(imageIcon, BorderLayout.EAST);
         bottomGroupPanel.setBackground(Color.WHITE);
         
+        // Specify the panels that should be removed on update.
         dynamicComponents.add(topGroupPanel);
         dynamicComponents.add(bottomGroupPanel);
         
     	frame.getContentPane().add(topPanel, BorderLayout.PAGE_START);
     	frame.getContentPane().add(topGroupPanel, BorderLayout.CENTER);
     	frame.getContentPane().add(bottomGroupPanel, BorderLayout.AFTER_LAST_LINE);
-    	//Display the window.
+    	
+    	// Display the window.
         frame.setSize(800, 800);
         frame.setVisible(true);
     }
     
+    /**
+     * Removes all dynamic elements, e.g. all elements that should be replaced
+     * when the layout is changed.
+     */
     private void updatePage() {
     	
     	int index = 0;
@@ -165,6 +171,10 @@ public class ApplicationWindow implements MouseListener {
     	frame.getContentPane().add(suggestionsPanel, BorderLayout.AFTER_LAST_LINE);
     	frame.setVisible(true);
     	frame.repaint();
+    	
+    	// Add this layout's panels that should be removed when the page is updated.
+    	dynamicComponents.add(mainPanel);
+    	dynamicComponents.add(suggestionsPanel);
     }
     
     public void loadFileFromSystem() {
