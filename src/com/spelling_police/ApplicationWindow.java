@@ -1,5 +1,6 @@
 package com.spelling_police;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -36,6 +37,7 @@ public class ApplicationWindow implements MouseListener {
 	private static String imagesPath = System.getProperty("user.dir") + "\\resources\\images\\";
 	private List<JComponent> dynamicComponents = new ArrayList<JComponent>();
 	private JTextArea textArea;
+	private JPanel suggestionsPanel;
 	private TextAreaListener textAreaListener;
 	
 	/** 
@@ -145,11 +147,24 @@ public class ApplicationWindow implements MouseListener {
     	mainPanel.add(textLabel);
     	mainPanel.add(jScrollPane1);
     	
+    	suggestionsPanel = new JPanel();
+    	
     	frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
+    	frame.getContentPane().add(suggestionsPanel, BorderLayout.AFTER_LAST_LINE);
     	frame.setVisible(true);
     	frame.repaint();
     }
 	
+    public void fillSuggestionsPanel(List<String> suggestions) {
+    	suggestionsPanel.removeAll();
+    	for (String suggestion : suggestions) {
+    		JButton button = new JButton(suggestion);
+    		button.setName(suggestion);
+    		suggestionsPanel.add(button);
+    	}
+    	frame.setVisible(true);
+    	frame.repaint();
+    }
 	
 	public static void main(String[] args) {
 		ApplicationWindow window = new ApplicationWindow();
@@ -192,7 +207,8 @@ public class ApplicationWindow implements MouseListener {
 		if (SwingUtilities.isRightMouseButton(e)) {
 			Mistake mistake = getMistakeFromPoint(e.getPoint());
 			if (mistake != null) {
-				System.out.println(mistake.getSuggestions());
+				suggestionsPanel.setName(mistake.getWord());
+				fillSuggestionsPanel(mistake.getSuggestions());
 			}
 		}
 	}
