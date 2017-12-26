@@ -1,5 +1,6 @@
 package com.spelling_police;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -17,7 +18,9 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
@@ -28,14 +31,18 @@ public class MainIconListener implements MouseListener {
 	private ImageIcon defaultIcon;
 	private ImageIcon hoverIcon;
 	
+	private JFrame parentFrame;
+	
 	public MainIconListener(JLabel label) {
 		this.label = label;
+		this.parentFrame = parentFrame;
 		defaultIcon = (ImageIcon) this.label.getIcon();
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		System.out.println("Mouse has been clicked");
+		ApplicationWindow.createTextEditorPage();
 	}
 
 	private void prepareHoverIcon() {
