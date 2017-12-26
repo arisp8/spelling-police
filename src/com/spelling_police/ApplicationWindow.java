@@ -124,7 +124,19 @@ public class ApplicationWindow implements MouseListener {
 	    dynamicComponents = new ArrayList<JComponent>();
     }
     
+    /**
+     * Creates a text editor page without a default string.
+     */
     public void createTextEditorPage() {
+    	createTextEditorPage("");
+    }
+    
+    /**
+     * Creates the text editor page where mistakes are highlighted 
+     * and suggestions are displayed on right click.
+     * @param defaultText The default text to show in the text area.
+     */
+    public void createTextEditorPage(String defaultText) {
     	updatePage();
     	
     	JPanel mainPanel = new JPanel();
@@ -153,6 +165,14 @@ public class ApplicationWindow implements MouseListener {
     	frame.getContentPane().add(suggestionsPanel, BorderLayout.AFTER_LAST_LINE);
     	frame.setVisible(true);
     	frame.repaint();
+    }
+    
+    public void loadFileFromSystem() {
+    	// wip
+    }
+    
+    public void loadFromRemoteURL() {
+    	// wip
     }
 	
     public void fillSuggestionsPanel(List<String> suggestions) {

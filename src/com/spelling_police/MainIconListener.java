@@ -47,6 +47,15 @@ public class MainIconListener implements MouseListener {
 			case "text-editor":
 				this.window.createTextEditorPage();
 				break;
+			case "from-file":
+				this.window.loadFileFromSystem();
+				break;
+			case "from-url":
+				this.window.loadFromRemoteURL();
+				break;
+			case "from-image":
+				// 
+				break;
 		}
 	}
 
