@@ -33,7 +33,7 @@ public class TextAreaListener implements DocumentListener {
 		this.textArea = textArea;
 		mistakesFound = new ArrayList<Mistake>();
 		spellCheck = new SpellChecker("el");
-		mistakePainter = new DefaultHighlightPainter(Color.decode("#f1362f"));
+		mistakePainter = new DefaultHighlightPainter(Color.decode("#FF8380"));
 		parser = new Parser("el");
 	}
 	
@@ -52,7 +52,6 @@ public class TextAreaListener implements DocumentListener {
 		if (e.getLength() > 1) {
 			try {
 				String newText = this.textArea.getText(offset, e.getLength());
-				System.out.println(newText);
 				
 				ArrayList<Mistake> mistakes = spellCheck.findMistakes(newText, sentenceCount, wordCount);
 				if (mistakes.size() > 0){
