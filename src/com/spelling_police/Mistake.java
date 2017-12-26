@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Mistake {
 		
-	String word;
+	private String word;
 	private List<String> suggestions;
 	private List<Integer> wrongPositions;
 	private static HashMap<String, Dictionary> dictionary;
@@ -113,6 +113,10 @@ public class Mistake {
 		String[] words = {smaller, bigger};
 		
 		return words;
+	}
+	
+	public String getWord() {
+		return this.word;
 	}
 	
 	public String toString() {

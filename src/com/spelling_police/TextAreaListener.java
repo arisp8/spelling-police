@@ -19,6 +19,7 @@ public class TextAreaListener implements DocumentListener {
 	private String currentWord;
 	private List<Mistake> mistakesFound;
 	private SpellChecker spellCheck;
+	private Parser parser;
 	
 	private int sentenceCount = 1;
 	private int wordCount = 1;
@@ -32,17 +33,44 @@ public class TextAreaListener implements DocumentListener {
 		this.textArea = textArea;
 		mistakesFound = new ArrayList<Mistake>();
 		spellCheck = new SpellChecker("el");
-		mistakePainter = new DefaultHighlightPainter(Color.RED);
+		mistakePainter = new DefaultHighlightPainter(Color.decode("#f1362f"));
+		parser = new Parser("el");
 	}
 	
 	@Override
 	public void changedUpdate(DocumentEvent e) {
-		//
+		System.out.println(e.getType().toString());
+		this.textArea.getActionMap().get("paste-from-clipboard");
 	}
 
 	@Override
 	public void insertUpdate(DocumentEvent e) {
 		int offset = e.getOffset();
+		
+		// If more than a single character have been appended then it's 
+		// probably a paste operation and we need to find all mistakes in there.
+		if (e.getLength() > 1) {
+			try {
+				String newText = this.textArea.getText(offset, e.getLength());
+				System.out.println(newText);
+				
+				ArrayList<Mistake> mistakes = spellCheck.findMistakes(newText, sentenceCount, wordCount);
+				if (mistakes.size() > 0){
+					// If mistakes have been found we need to get the whole text to highlight the correct positions.
+					newText = this.textArea.getText();
+				}
+				for (Mistake mistake : mistakes) {
+					String word = mistake.getWord();
+					int index = newText.indexOf(word);
+					highlight(index, index + word.length()); 
+				}
+				
+			} catch (BadLocationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
 		try {
 			char lastChar = e.getDocument().getText(offset, 1).charAt(0);
 			
@@ -118,6 +146,7 @@ public class TextAreaListener implements DocumentListener {
             || c == '?'
             || c == ':'
             || c == ';'
+            || c == '\''
             ;
     }
 

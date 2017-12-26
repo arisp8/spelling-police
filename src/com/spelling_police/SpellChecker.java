@@ -23,23 +23,28 @@ public class SpellChecker {
 	 * @param input A single word or a phrase 
 	 * @return A list of words that are wrong and weren't found in the Dictionary
 	*/
-	public ArrayList<Mistake> findMistakes(String input) {
+	public ArrayList<Mistake> findMistakes(String input, int sentenceStart, int wordStart) {
+		
+		
 		
 		ArrayList<Mistake> mistakes = new ArrayList<Mistake>();
 		ArrayList<ArrayList<String>> sentences = parser.separate(input);
-		int sentence_count = 1;
 		for(List<String> sentence : sentences) {
-			int word_count = 1;
 			for (String word : sentence) {
-				Mistake singleWord = singleWordCheck(word, sentence_count, word_count);
+				Mistake singleWord = singleWordCheck(word, sentenceStart, wordStart);
 				if (singleWord != null) {
 					mistakes.add(singleWord);
 				}
-				word_count++;
+				wordStart++;
 			}
-			sentence_count++;
+			sentenceStart++;
+			wordStart = 1;
 		}
 		return mistakes;
+	}
+	
+	public ArrayList<Mistake> findMistakes(String input) {
+		return findMistakes(input, 1, 1);
 	}
 	
 	
