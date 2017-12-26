@@ -32,17 +32,22 @@ public class MainIconListener implements MouseListener {
 	private ImageIcon hoverIcon;
 	
 	private JFrame parentFrame;
+	private ApplicationWindow window;
 	
-	public MainIconListener(JLabel label) {
+	public MainIconListener(JLabel label, ApplicationWindow window) {
 		this.label = label;
 		this.parentFrame = parentFrame;
 		defaultIcon = (ImageIcon) this.label.getIcon();
+		this.window = window;
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		System.out.println("Mouse has been clicked");
-		ApplicationWindow.createTextEditorPage();
+		switch(e.getComponent().getName()) {
+			case "text-editor":
+				this.window.createTextEditorPage();
+				break;
+		}
 	}
 
 	private void prepareHoverIcon() {

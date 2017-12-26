@@ -2,6 +2,7 @@ package com.spelling_police;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JTextArea;
@@ -17,7 +18,7 @@ public class TextAreaListener implements DocumentListener {
 	
 	private JTextArea textArea;
 	private String currentWord;
-	private List<Mistake> mistakesFound;
+	private HashMap<String, Mistake> mistakesFound;
 	private SpellChecker spellCheck;
 	private Parser parser;
 	
@@ -31,7 +32,7 @@ public class TextAreaListener implements DocumentListener {
 	
 	public TextAreaListener(JTextArea textArea) {
 		this.textArea = textArea;
-		mistakesFound = new ArrayList<Mistake>();
+		mistakesFound = new HashMap<String, Mistake>();
 		spellCheck = new SpellChecker("el");
 		mistakePainter = new DefaultHighlightPainter(Color.decode("#FF8380"));
 		parser = new Parser("el");
@@ -58,10 +59,13 @@ public class TextAreaListener implements DocumentListener {
 					// If mistakes have been found we need to get the whole text to highlight the correct positions.
 					newText = this.textArea.getText();
 				}
+				
 				for (Mistake mistake : mistakes) {
 					String word = mistake.getWord();
 					int index = newText.indexOf(word);
-					highlight(index, index + word.length()); 
+					highlight(index, index + word.length());
+					
+					mistakesFound.put(word, mistake);
 				}
 				
 			} catch (BadLocationException e1) {
@@ -80,7 +84,7 @@ public class TextAreaListener implements DocumentListener {
 				
 				if (currentMistake != null) {
 					highlight(lastWordStart, lastWordEnd);
-					mistakesFound.add(currentMistake);
+					mistakesFound.put(currentWord, currentMistake);
 				}
 				
 				currentWord = "";
@@ -148,5 +152,9 @@ public class TextAreaListener implements DocumentListener {
             || c == '\''
             ;
     }
+	
+	public Mistake mistakeFromWord(String word) {
+		return mistakesFound.get(word);
+	}
 
 }

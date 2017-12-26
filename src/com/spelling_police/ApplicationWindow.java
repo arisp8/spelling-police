@@ -13,26 +13,36 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.text.Utilities;
+import javax.swing.SwingUtilities;
 
+import java.awt.Robot;
 import java.awt.Dimension;
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Point;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 //import java.awt.event.*;
 
-public class ApplicationWindow {
+public class ApplicationWindow implements MouseListener {
 	
 	private static JFrame frame;
 	private static String imagesPath = System.getProperty("user.dir") + "\\resources\\images\\";
-	private static List<JComponent> dynamicComponents = new ArrayList<JComponent>();
+	private List<JComponent> dynamicComponents = new ArrayList<JComponent>();
+	private JTextArea textArea;
+	private TextAreaListener textAreaListener;
 	
-	/**
+	/** 
      * Creates the GUI for the starting page that appears
      * when a user runs the application.
      */
-    private static void createStartPage() {
+    private void createStartPage() {
     	updatePage();
     	
     	//Create and set up the window.
@@ -61,14 +71,18 @@ public class ApplicationWindow {
     	optionsLabel.setForeground(Color.decode("#666666"));
     	
         JLabel fileIcon = new JLabel(new ImageIcon(imagesPath + "File.png"));
+        fileIcon.setName("from-file");
         JLabel textIcon = new JLabel(new ImageIcon(imagesPath + "Text.png"));
+        textIcon.setName("text-editor");
         JLabel linkIcon = new JLabel(new ImageIcon(imagesPath + "Link.png"));
+        linkIcon.setName("from-url");
         JLabel imageIcon = new JLabel(new ImageIcon(imagesPath + "Image.png"));
+        imageIcon.setName("from-image");
         
-        fileIcon.addMouseListener(new MainIconListener(fileIcon));
-        textIcon.addMouseListener(new MainIconListener(textIcon));
-        linkIcon.addMouseListener(new MainIconListener(linkIcon));
-        imageIcon.addMouseListener(new MainIconListener(imageIcon));
+        fileIcon.addMouseListener(new MainIconListener(fileIcon, this));
+        textIcon.addMouseListener(new MainIconListener(textIcon, this));
+        linkIcon.addMouseListener(new MainIconListener(linkIcon, this));
+        imageIcon.addMouseListener(new MainIconListener(imageIcon, this));
         
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
@@ -97,7 +111,7 @@ public class ApplicationWindow {
         frame.setVisible(true);
     }
     
-    private static void updatePage() {
+    private void updatePage() {
     	
     	int index = 0;
     	for (JComponent component : dynamicComponents) {
@@ -108,13 +122,14 @@ public class ApplicationWindow {
 	    dynamicComponents = new ArrayList<JComponent>();
     }
     
-    public static void createTextEditorPage() {
+    public void createTextEditorPage() {
     	updatePage();
     	
     	JPanel mainPanel = new JPanel();
     	JLabel textLabel = new JLabel("Enter your text");
-    	JTextArea textArea = new JTextArea();
+    	textArea = new JTextArea();
     	
+    	textArea.setName("main-text-editor");
     	textArea.setColumns(70);
         textArea.setLineWrap(true);
         textArea.setRows(40);
@@ -123,23 +138,12 @@ public class ApplicationWindow {
         mainPanel.setBackground(Color.WHITE);
         
         JScrollPane jScrollPane1 = new JScrollPane(textArea);
-    	textArea.getDocument().addDocumentListener(new TextAreaListener(textArea));
-        
-//    	JTextPane textPane = new JTextPane();
-//    	textPane.setText("Lorem ipsum dolor sit amet, consecteur in the l.a. noire sequel");
-//    	StyledDocument doc = textPane.getStyledDocument();
-//    	
-//    	SimpleAttributeSet keyWord = new SimpleAttributeSet();
-//    	StyleConstants.setForeground(keyWord, Color.RED);
-//    	StyleConstants.setBackground(keyWord, Color.YELLOW);
-//    	StyleConstants.setUnderline(keyWord, Boolean.TRUE );
-//    	StyleConstants.setBold(keyWord, true);
-//    	
-//    	doc.setCharacterAttributes(20, 4, keyWord, false);
+        textAreaListener = new TextAreaListener(textArea);
+    	textArea.getDocument().addDocumentListener(textAreaListener);
+    	textArea.addMouseListener(this);
     	
     	mainPanel.add(textLabel);
     	mainPanel.add(jScrollPane1);
-//    	mainPanel.add(textPane);
     	
     	frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
     	frame.setVisible(true);
@@ -148,7 +152,73 @@ public class ApplicationWindow {
 	
 	
 	public static void main(String[] args) {
-		createStartPage();		
+		ApplicationWindow window = new ApplicationWindow();
+		window.createStartPage();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		String name = e.getComponent().getName();
+		
+		switch (name) {
+			case "main-text-editor":
+				handleTextAreaClick(e);
+		}
+		
+	}
+	
+	public Mistake getMistakeFromPoint(Point point) {
+		textArea.setCaretPosition(textArea.viewToModel(point));
+	    String currentWord = findCurrentWord(textArea);
+	    Mistake mistake = textAreaListener.mistakeFromWord(currentWord);
+	    return mistake;
+	}
+	
+	protected String findCurrentWord(JTextArea ta) {
+        try {
+            int start = Utilities.getWordStart(ta, ta.getCaretPosition());
+            int end = Utilities.getWordEnd(ta, ta.getCaretPosition());
+            String text = ta.getDocument().getText(start, end - start);
+            
+            return text;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return "";
+    }
+	
+	public void handleTextAreaClick(MouseEvent e) {
+		if (SwingUtilities.isRightMouseButton(e)) {
+			Mistake mistake = getMistakeFromPoint(e.getPoint());
+			if (mistake != null) {
+				System.out.println(mistake.getSuggestions());
+			}
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
