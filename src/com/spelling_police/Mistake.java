@@ -11,27 +11,29 @@ public class Mistake {
 	private String word;
 	private List<String> suggestions;
 	private List<Integer> wrongPositions;
-	private static HashMap<String, Dictionary> dictionary;
+	
+	private Thread suggestionsThread;
 	
 	private int position;
 	private int sentence;
+	
+	
 	public Mistake(String word, String language, int sentence, int position){
 		this.word = word;
 		this.sentence = sentence;
 		this.position = position;
 		
-		if (dictionary == null) {
-			dictionary = new HashMap<String, Dictionary>();
-		}
-		
-		if (!dictionary.containsKey(language)) {
-			dictionary.put(language, new Dictionary(language));
-		}
+		suggestionsThread = new Thread() {
+			public void run() {
+				suggestions = getSuggestions();
+			}
+		};
+		suggestionsThread.start();
 	}
 	
 	public List<String> getSuggestions() {
 		if (suggestions == null) {
-			suggestions = dictionary.get("el").similarList(word, 5);
+			suggestions = Dictionary.getDictionary("el").similarList(word, 5);
 		}
 		return suggestions;
 	}
@@ -51,7 +53,7 @@ public class Mistake {
 		 */
 
 		if (suggestions == null){
-			suggestions = dictionary.get("el").similarList(word, 5);
+			suggestions = Dictionary.getDictionary("el").similarList(word, 5);
 		}
 		
 		return wrongPositions = indexOfDifference(word , suggestions.get(0));

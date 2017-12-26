@@ -17,6 +17,8 @@ public class Dictionary {
 	private HashMap<String, String> config;
 
 	private Thread loadThread;
+	
+	private static HashMap<String, Dictionary> activeDictionaries = new HashMap<String, Dictionary>();
 
 	/** Default constructor for Dictionaries
 	 * @param language The language of the dictionary to load
@@ -35,9 +37,16 @@ public class Dictionary {
 			}
 		};
 		loadThread.start();
-		// this.wordList = readDictionary(path, encoding);
 	}
-
+	
+	public static Dictionary getDictionary(String language) {
+		if (!activeDictionaries.containsKey(language)) {
+			activeDictionaries.put(language, new Dictionary(language));
+		}
+		
+		return activeDictionaries.get(language);
+	}
+	
 	private HashMap<String, String> getConfig(String filePath) {
 		HashMap<String, String> config = new HashMap<String, String>();
 
@@ -164,15 +173,13 @@ public class Dictionary {
 
   public List<String> similarList (String word , int limit){
 
-
         HashMap<String,Integer> foundWords = new HashMap<String,Integer>();
-        Dictionary dict = new Dictionary ("el");
 
         //defines fuzzyness
         double fuzzyness = 0.80;
 
        do {
-           foundWords = dict.fuzzySearch(word,fuzzyness);
+           foundWords = this.fuzzySearch(word,fuzzyness);
 
 		   fuzzyness -= 0.05;
 		} while(foundWords.size() < limit);

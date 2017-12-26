@@ -15,7 +15,7 @@ public class SpellChecker {
 		this.language = language;
 		
 		// Initialize required components
-		dict = new Dictionary(language);
+		dict = Dictionary.getDictionary("el");
 		parser = new Parser(language);
 	}
 	
@@ -24,8 +24,6 @@ public class SpellChecker {
 	 * @return A list of words that are wrong and weren't found in the Dictionary
 	*/
 	public ArrayList<Mistake> findMistakes(String input, int sentenceStart, int wordStart) {
-		
-		
 		
 		ArrayList<Mistake> mistakes = new ArrayList<Mistake>();
 		ArrayList<ArrayList<String>> sentences = parser.separate(input);

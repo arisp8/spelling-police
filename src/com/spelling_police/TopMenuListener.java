@@ -18,9 +18,10 @@ public class TopMenuListener implements MouseListener {
 	private JLabel label;
 	private EmptyBorder originalBorder;
 	public TopMenuListener(JLabel label) {
+		
 		this.label = label;
 		originalBorder = (EmptyBorder) this.label.getBorder();
-		System.out.println(originalBorder.getBorderInsets());
+		
 		if (hoverBorder == null) {
 			Border beveledBorder = BorderFactory.createSoftBevelBorder(BevelBorder.RAISED, 
 					Color.decode("#666666"), Color.decode("#ebebeb"));
