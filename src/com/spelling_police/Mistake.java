@@ -22,13 +22,6 @@ public class Mistake {
 		this.word = word;
 		this.sentence = sentence;
 		this.position = position;
-		
-		suggestionsThread = new Thread() {
-			public void run() {
-				suggestions = getSuggestions();
-			}
-		};
-		suggestionsThread.start();
 	}
 	
 	public List<String> getSuggestions() {
