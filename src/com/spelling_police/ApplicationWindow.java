@@ -9,12 +9,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.Utilities;
+import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.SwingUtilities;
 
 import java.awt.Robot;
@@ -28,6 +34,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 //import java.awt.event.*;
 
@@ -39,6 +46,7 @@ public class ApplicationWindow implements MouseListener {
 	private JTextArea textArea;
 	private JPanel suggestionsPanel;
 	private TextAreaListener textAreaListener;
+	private DefaultHighlightPainter mistakePainter = new DefaultHighlightPainter(Color.decode("#FF8380"));;
 	
 	/** 
      * Creates the GUI for the starting page that appears
@@ -159,7 +167,33 @@ public class ApplicationWindow implements MouseListener {
         
         JScrollPane jScrollPane1 = new JScrollPane(textArea);
         textAreaListener = new TextAreaListener(textArea);
-    	textArea.getDocument().addDocumentListener(textAreaListener);
+        textArea.getDocument().addDocumentListener(textAreaListener);
+        
+        
+        textArea.addCaretListener(new CaretListener() {
+
+			@Override
+			public void caretUpdate(CaretEvent e) {
+				HashMap<String, Mistake> mistakes = textAreaListener.getMistakesFound();
+				String text = textArea.getText();
+				Highlighter hl = textArea.getHighlighter();
+                hl.removeAllHighlights();
+				for (String word : mistakes.keySet()) {                          
+                    int index = text.indexOf(word);
+                    while(index >= 0){
+                        try {                
+                            Object o = hl.addHighlight(index, index + word.length(), mistakePainter);
+                            index = text.indexOf(word, index + word.length());
+                        } catch (BadLocationException ex) {
+                            ex.printStackTrace();
+                        }
+                    
+                    }
+				}
+        	
+			}
+        });
+        
     	textArea.addMouseListener(this);
     	
     	mainPanel.add(textLabel);
@@ -224,7 +258,6 @@ public class ApplicationWindow implements MouseListener {
             int start = Utilities.getWordStart(ta, ta.getCaretPosition());
             int end = Utilities.getWordEnd(ta, ta.getCaretPosition());
             String text = ta.getDocument().getText(start, end - start);
-            
             return text;
         } catch (Exception e) {
             e.printStackTrace();

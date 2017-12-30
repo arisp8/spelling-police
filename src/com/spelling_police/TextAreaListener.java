@@ -9,9 +9,6 @@ import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
-import javax.swing.text.Highlighter;
-import javax.swing.text.Highlighter.HighlightPainter;
 import javax.swing.text.Utilities;
 
 public class TextAreaListener implements DocumentListener {
@@ -28,13 +25,10 @@ public class TextAreaListener implements DocumentListener {
 	private int lastWordStart;
 	private int lastWordEnd;
 	
-	private DefaultHighlightPainter mistakePainter;
-	
 	public TextAreaListener(JTextArea textArea) {
 		this.textArea = textArea;
 		mistakesFound = new HashMap<String, Mistake>();
 		spellCheck = new SpellChecker("el");
-		mistakePainter = new DefaultHighlightPainter(Color.decode("#FF8380"));
 		parser = new Parser("el");
 	}
 	
@@ -42,6 +36,10 @@ public class TextAreaListener implements DocumentListener {
 	public void changedUpdate(DocumentEvent e) {
 		System.out.println(e.getType().toString());
 		this.textArea.getActionMap().get("paste-from-clipboard");
+	}
+	
+	public HashMap<String, Mistake> getMistakesFound() {
+		return mistakesFound;
 	}
 
 	@Override
@@ -63,7 +61,6 @@ public class TextAreaListener implements DocumentListener {
 				for (Mistake mistake : mistakes) {
 					String word = mistake.getWord();
 					int index = newText.indexOf(word);
-					highlight(index, index + word.length());
 					
 					mistakesFound.put(word, mistake);
 				}
@@ -83,7 +80,6 @@ public class TextAreaListener implements DocumentListener {
 				Mistake currentMistake = spellCheck.singleWordCheck(currentWord, sentenceCount, wordCount);
 				
 				if (currentMistake != null) {
-					highlight(lastWordStart, lastWordEnd);
 					mistakesFound.put(currentWord, currentMistake);
 				}
 				
@@ -103,18 +99,6 @@ public class TextAreaListener implements DocumentListener {
 			e1.printStackTrace();
 		}
 		
-	}
-	
-	protected void highlight(int start, int end) {
-		try {
-	        Highlighter hilite = this.textArea.getHighlighter();
-	        int pos = start;
-
-            hilite.addHighlight(start, end, mistakePainter);
-	         
-	    } catch (BadLocationException e) {
-	    	//
-	    }
 	}
 
 	@Override
