@@ -46,7 +46,7 @@ public class ApplicationWindow implements MouseListener {
 	private JTextArea textArea;
 	private JPanel suggestionsPanel;
 	private TextAreaListener textAreaListener;
-	private DefaultHighlightPainter mistakePainter = new DefaultHighlightPainter(Color.decode("#FF8380"));;
+	private DefaultHighlightPainter mistakePainter = new DefaultHighlightPainter(Color.decode("#FF8380"));
 	
 	/** 
      * Creates the GUI for the starting page that appears
@@ -168,31 +168,6 @@ public class ApplicationWindow implements MouseListener {
         JScrollPane jScrollPane1 = new JScrollPane(textArea);
         textAreaListener = new TextAreaListener(textArea);
         textArea.getDocument().addDocumentListener(textAreaListener);
-        
-        
-        textArea.addCaretListener(new CaretListener() {
-
-			@Override
-			public void caretUpdate(CaretEvent e) {
-				HashMap<String, Mistake> mistakes = textAreaListener.getMistakesFound();
-				String text = textArea.getText();
-				Highlighter hl = textArea.getHighlighter();
-                hl.removeAllHighlights();
-				for (String word : mistakes.keySet()) {                          
-                    int index = text.indexOf(word);
-                    while(index >= 0){
-                        try {                
-                            Object o = hl.addHighlight(index, index + word.length(), mistakePainter);
-                            index = text.indexOf(word, index + word.length());
-                        } catch (BadLocationException ex) {
-                            ex.printStackTrace();
-                        }
-                    
-                    }
-				}
-        	
-			}
-        });
         
     	textArea.addMouseListener(this);
     	

@@ -4,12 +4,16 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Highlighter;
 import javax.swing.text.Utilities;
+import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 
 public class TextAreaListener implements DocumentListener {
 	
@@ -25,6 +29,8 @@ public class TextAreaListener implements DocumentListener {
 	private int lastWordStart;
 	private int lastWordEnd;
 	
+	private DefaultHighlightPainter mistakePainter = new DefaultHighlightPainter(Color.decode("#FF8380"));
+	
 	public TextAreaListener(JTextArea textArea) {
 		this.textArea = textArea;
 		mistakesFound = new HashMap<String, Mistake>();
@@ -34,8 +40,7 @@ public class TextAreaListener implements DocumentListener {
 	
 	@Override
 	public void changedUpdate(DocumentEvent e) {
-		System.out.println(e.getType().toString());
-		this.textArea.getActionMap().get("paste-from-clipboard");
+		
 	}
 	
 	public HashMap<String, Mistake> getMistakesFound() {
@@ -46,57 +51,74 @@ public class TextAreaListener implements DocumentListener {
 	public void insertUpdate(DocumentEvent e) {
 		int offset = e.getOffset();
 		
-		// If more than a single character have been appended then it's 
-		// probably a paste operation and we need to find all mistakes in there.
-		if (e.getLength() > 1) {
-			try {
+		try {
+			// If more than a single character have been appended then it's 
+			// probably a paste operation and we need to find all mistakes in there.
+			if (e.getLength() > 1) {
+				
 				String newText = this.textArea.getText(offset, e.getLength());
 				
 				ArrayList<Mistake> mistakes = spellCheck.findMistakes(newText, sentenceCount, wordCount);
-				if (mistakes.size() > 0){
-					// If mistakes have been found we need to get the whole text to highlight the correct positions.
-					newText = this.textArea.getText();
-				}
 				
 				for (Mistake mistake : mistakes) {
 					String word = mistake.getWord();
-					int index = newText.indexOf(word);
-					
 					mistakesFound.put(word, mistake);
 				}
+					
 				
-			} catch (BadLocationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			} else {
+				
+				char lastChar = e.getDocument().getText(offset, 1).charAt(0);
+				
+				if (Character.isLetterOrDigit(lastChar)) {
+					currentWord = findCurrentWord(this.textArea);
+				} else if (currentWord != "" && currentWord != null) {
+					Mistake currentMistake = spellCheck.singleWordCheck(currentWord, sentenceCount, wordCount);
+					
+					if (currentMistake != null) {
+						mistakesFound.put(currentWord, currentMistake);
+					}
+					
+					currentWord = "";
+					
+					if (isPunctuation(lastChar)) {
+						sentenceCount++;
+						wordCount = 1;
+					} else {
+						wordCount++;
+					}
+					
+				}
+				
 			}
+		} catch (BadLocationException ex) {
+			ex.printStackTrace();
 		}
 		
-		try {
-			char lastChar = e.getDocument().getText(offset, 1).charAt(0);
-			
-			if (Character.isLetterOrDigit(lastChar)) {
-				currentWord = findCurrentWord(this.textArea);
-			} else if (currentWord != "") {
-				Mistake currentMistake = spellCheck.singleWordCheck(currentWord, sentenceCount, wordCount);
-				
-				if (currentMistake != null) {
-					mistakesFound.put(currentWord, currentMistake);
+		highlightMistakes();
+		
+	}
+	
+	private void highlightMistakes() {
+		
+		String text = textArea.getText();
+		Highlighter hl = textArea.getHighlighter();
+        hl.removeAllHighlights();
+        
+		for (String word : mistakesFound.keySet()) {                          
+            
+            Matcher m = Pattern.compile(word + "[-\\s.?;:]").matcher(text);
+            
+            while (m.find()) {
+            	try {
+					Object o = hl.addHighlight(m.start(), m.start() + word.length(), mistakePainter);
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				
-				currentWord = "";
-				
-				if (isPunctuation(lastChar)) {
-					sentenceCount++;
-					wordCount = 1;
-				} else {
-					wordCount++;
-				}
-				
-			}
-			
-		} catch (BadLocationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+            }
+           
+            
 		}
 		
 	}
