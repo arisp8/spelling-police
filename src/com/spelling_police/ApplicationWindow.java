@@ -48,216 +48,214 @@ public class ApplicationWindow implements MouseListener {
 	private JPanel suggestionsPanel;
 	private TextAreaListener textAreaListener;
 	private DefaultHighlightPainter mistakePainter = new DefaultHighlightPainter(Color.decode("#FF8380"));
-	
-	/** 
-     * Creates the GUI for the starting page that appears
-     * when a user runs the application.
-     */
-    private void createStartPage() {
-    	updatePage();
-    	
-    	//Create and set up the window.
-        frame = new JFrame("Spelling Police");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        ImageIcon img = new ImageIcon(imagesPath + "Logo.png");
-        frame.setIconImage(img.getImage());
- 
-        JLabel fileLabel = new JLabel("File");
-        JLabel optionsLabel = new JLabel("Options");
-    	
-        // Set padding for the top buttons
-        fileLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-    	optionsLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        
-    	// Increase label font size
-    	fileLabel.setFont(fileLabel.getFont().deriveFont(16.0f));
-    	optionsLabel.setFont(optionsLabel.getFont().deriveFont(16.0f));
-    	
-    	fileLabel.addMouseListener(new TopMenuListener(fileLabel));
-    	optionsLabel.addMouseListener(new TopMenuListener(optionsLabel));
-    	
-    	// Set gray text color for the labels
-    	fileLabel.setForeground(Color.decode("#666666"));
-    	optionsLabel.setForeground(Color.decode("#666666"));
-    	
-        JLabel fileIcon = new JLabel(new ImageIcon(imagesPath + "File.png"));
-        fileIcon.setName("from-file");
-        JLabel textIcon = new JLabel(new ImageIcon(imagesPath + "Text.png"));
-        textIcon.setName("text-editor");
-        JLabel linkIcon = new JLabel(new ImageIcon(imagesPath + "Link.png"));
-        linkIcon.setName("from-url");
-        JLabel imageIcon = new JLabel(new ImageIcon(imagesPath + "Image.png"));
-        imageIcon.setName("from-image");
-        
-        fileIcon.addMouseListener(new MainIconListener(fileIcon, this));
-        textIcon.addMouseListener(new MainIconListener(textIcon, this));
-        linkIcon.addMouseListener(new MainIconListener(linkIcon, this));
-        imageIcon.addMouseListener(new MainIconListener(imageIcon, this));
-        
-        JPanel topPanel = new JPanel();
-        topPanel.setLayout(new BorderLayout());
-        topPanel.add(fileLabel, BorderLayout.LINE_START);
-        topPanel.add(optionsLabel, BorderLayout.LINE_END);
-        topPanel.setBackground(Color.WHITE);
-        
-        JPanel topGroupPanel = new JPanel();
-        topGroupPanel.add(textIcon, BorderLayout.WEST);
-        topGroupPanel.add(fileIcon, BorderLayout.EAST);
-        topGroupPanel.setBackground(Color.WHITE);
-        
-        JPanel bottomGroupPanel = new JPanel();
-        bottomGroupPanel.add(linkIcon, BorderLayout.WEST);
-        bottomGroupPanel.add(imageIcon, BorderLayout.EAST);
-        bottomGroupPanel.setBackground(Color.WHITE);
-        
-        // Specify the panels that should be removed on update.
-        dynamicComponents.add(topGroupPanel);
-        dynamicComponents.add(bottomGroupPanel);
-        
-    	frame.getContentPane().add(topPanel, BorderLayout.PAGE_START);
-    	frame.getContentPane().add(topGroupPanel, BorderLayout.CENTER);
-    	frame.getContentPane().add(bottomGroupPanel, BorderLayout.AFTER_LAST_LINE);
-    	
-    	// Display the window.
-        frame.setSize(800, 800);
-        frame.setVisible(true);
-    }
-    
-    /**
-     * Removes all dynamic elements, e.g. all elements that should be replaced
-     * when the layout is changed.
-     */
-    private void updatePage() {
-    	
-    	int index = 0;
-    	for (JComponent component : dynamicComponents) {
+
+	/**
+	 * Creates the GUI for the starting page that appears when a user runs the
+	 * application.
+	 */
+	private void createStartPage() {
+		updatePage();
+
+		// Create and set up the window.
+		frame = new JFrame("Spelling Police");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		ImageIcon img = new ImageIcon(imagesPath + "Logo.png");
+		frame.setIconImage(img.getImage());
+
+		JLabel fileLabel = new JLabel("File");
+		JLabel optionsLabel = new JLabel("Options");
+
+		// Set padding for the top buttons
+		fileLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		optionsLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+		// Increase label font size
+		fileLabel.setFont(fileLabel.getFont().deriveFont(16.0f));
+		optionsLabel.setFont(optionsLabel.getFont().deriveFont(16.0f));
+
+		fileLabel.addMouseListener(new TopMenuListener(fileLabel));
+		optionsLabel.addMouseListener(new TopMenuListener(optionsLabel));
+
+		// Set gray text color for the labels
+		fileLabel.setForeground(Color.decode("#666666"));
+		optionsLabel.setForeground(Color.decode("#666666"));
+
+		JLabel fileIcon = new JLabel(new ImageIcon(imagesPath + "File.png"));
+		fileIcon.setName("from-file");
+		JLabel textIcon = new JLabel(new ImageIcon(imagesPath + "Text.png"));
+		textIcon.setName("text-editor");
+		JLabel linkIcon = new JLabel(new ImageIcon(imagesPath + "Link.png"));
+		linkIcon.setName("from-url");
+		JLabel imageIcon = new JLabel(new ImageIcon(imagesPath + "Image.png"));
+		imageIcon.setName("from-image");
+
+		fileIcon.addMouseListener(new MainIconListener(fileIcon, this));
+		textIcon.addMouseListener(new MainIconListener(textIcon, this));
+		linkIcon.addMouseListener(new MainIconListener(linkIcon, this));
+		imageIcon.addMouseListener(new MainIconListener(imageIcon, this));
+
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new BorderLayout());
+		topPanel.add(fileLabel, BorderLayout.LINE_START);
+		topPanel.add(optionsLabel, BorderLayout.LINE_END);
+		topPanel.setBackground(Color.WHITE);
+
+		JPanel topGroupPanel = new JPanel();
+		topGroupPanel.add(textIcon, BorderLayout.WEST);
+		topGroupPanel.add(fileIcon, BorderLayout.EAST);
+		topGroupPanel.setBackground(Color.WHITE);
+
+		JPanel bottomGroupPanel = new JPanel();
+		bottomGroupPanel.add(linkIcon, BorderLayout.WEST);
+		bottomGroupPanel.add(imageIcon, BorderLayout.EAST);
+		bottomGroupPanel.setBackground(Color.WHITE);
+
+		// Specify the panels that should be removed on update.
+		dynamicComponents.add(topGroupPanel);
+		dynamicComponents.add(bottomGroupPanel);
+
+		frame.getContentPane().add(topPanel, BorderLayout.PAGE_START);
+		frame.getContentPane().add(topGroupPanel, BorderLayout.CENTER);
+		frame.getContentPane().add(bottomGroupPanel, BorderLayout.AFTER_LAST_LINE);
+
+		// Display the window.
+		frame.setSize(800, 800);
+		frame.setVisible(true);
+	}
+
+	/**
+	 * Removes all dynamic elements, e.g. all elements that should be replaced
+	 * when the layout is changed.
+	 */
+	private void updatePage() {
+
+		int index = 0;
+		for (JComponent component : dynamicComponents) {
 			frame.getContentPane().remove(component);
 			index++;
 		}
-    	
-	    dynamicComponents = new ArrayList<JComponent>();
-    }
-    
-    /**
-     * Creates a text editor page without a default string.
-     */
-    public void createTextEditorPage() {
-    	createTextEditorPage("");
-    }
-    
-    /**
-     * Creates the text editor page where mistakes are highlighted 
-     * and suggestions are displayed on right click.
-     * @param defaultText The default text to show in the text area.
-     */
-    public void createTextEditorPage(String defaultText) {
-    	updatePage();
-    	
-    	JPanel mainPanel = new JPanel();
-    	JLabel textLabel = new JLabel("Enter your text");
-    	textArea = new JTextArea();
-    	
-    	textArea.setName("main-text-editor");
-    	textArea.setColumns(70);
-        textArea.setLineWrap(true);
-        textArea.setRows(40);
-        textArea.setWrapStyleWord(true);
-        
-        textAreaListener = new TextAreaListener(textArea);
-        textArea.getDocument().addDocumentListener(textAreaListener);
-        
-        textArea.setText(defaultText);
-        
-        mainPanel.setBackground(Color.WHITE);
-        
-        JScrollPane jScrollPane1 = new JScrollPane(textArea);
-        
-        
-    	textArea.addMouseListener(this);
-    	
-    	mainPanel.add(textLabel);
-    	mainPanel.add(jScrollPane1);
-    	
-    	suggestionsPanel = new JPanel();
-    	
-    	frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
-    	frame.getContentPane().add(suggestionsPanel, BorderLayout.AFTER_LAST_LINE);
-    	frame.setVisible(true);
-    	frame.repaint();
-    	
-    	// Add this layout's panels that should be removed when the page is updated.
-    	dynamicComponents.add(mainPanel);
-    	dynamicComponents.add(suggestionsPanel);
-    }
-    
-    public void loadFileFromSystem() {
-    	// wip
-    }
-    
-    public void loadFromRemoteURL() {
-    	String url = (String)JOptionPane.showInputDialog(
-    	                    frame,
-    	                    "Enter the url:",
-    	                    "Load from URL",
-    	                    JOptionPane.PLAIN_MESSAGE,
-    	                    null, null, "");
 
-    	//If a string was returned, say so.
-    	if ((url != null) && (url.length() > 0)) {
-    	    String text = UrlContentReader.extractURLContents(url, true);
-    	    if (text != null) {
-    	    	createTextEditorPage(text);
-    	    }
-    	}
-    }
-	
-    public void fillSuggestionsPanel(List<String> suggestions, String wrongWord) {
-    	suggestionsPanel.removeAll();
-    	for (String suggestion : suggestions) {
-    		JButton button = new JButton(suggestion);
-    		button.setName(suggestion);
-    		suggestionsPanel.add(button);
-    		
-    		button.addMouseListener(new MouseListener() {
+		dynamicComponents = new ArrayList<JComponent>();
+	}
+
+	/**
+	 * Creates a text editor page without a default string.
+	 */
+	public void createTextEditorPage() {
+		createTextEditorPage("");
+	}
+
+	/**
+	 * Creates the text editor page where mistakes are highlighted and
+	 * suggestions are displayed on right click.
+	 * 
+	 * @param defaultText
+	 *            The default text to show in the text area.
+	 */
+	public void createTextEditorPage(String defaultText) {
+		updatePage();
+
+		JPanel mainPanel = new JPanel();
+		JLabel textLabel = new JLabel("Enter your text");
+		textArea = new JTextArea();
+
+		textArea.setName("main-text-editor");
+		textArea.setColumns(70);
+		textArea.setLineWrap(true);
+		textArea.setRows(40);
+		textArea.setWrapStyleWord(true);
+
+		textAreaListener = new TextAreaListener(textArea);
+		textArea.getDocument().addDocumentListener(textAreaListener);
+
+		textArea.setText(defaultText);
+
+		mainPanel.setBackground(Color.WHITE);
+
+		JScrollPane jScrollPane1 = new JScrollPane(textArea);
+
+		textArea.addMouseListener(this);
+
+		mainPanel.add(textLabel);
+		mainPanel.add(jScrollPane1);
+
+		suggestionsPanel = new JPanel();
+
+		frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
+		frame.getContentPane().add(suggestionsPanel, BorderLayout.AFTER_LAST_LINE);
+		frame.setVisible(true);
+		frame.repaint();
+
+		// Add this layout's panels that should be removed when the page is
+		// updated.
+		dynamicComponents.add(mainPanel);
+		dynamicComponents.add(suggestionsPanel);
+	}
+
+	public void loadFileFromSystem() {
+		// wip
+	}
+
+	public void loadFromRemoteURL() {
+		String url = (String) JOptionPane.showInputDialog(frame, "Enter the url:", "Load from URL",
+				JOptionPane.PLAIN_MESSAGE, null, null, "");
+
+		// If a string was returned, say so.
+		if ((url != null) && (url.length() > 0)) {
+			String text = UrlContentReader.extractURLContents(url, true);
+			if (text != null) {
+				createTextEditorPage(text);
+			}
+		}
+	}
+
+	public void fillSuggestionsPanel(List<String> suggestions, String wrongWord) {
+		suggestionsPanel.removeAll();
+		for (String suggestion : suggestions) {
+			JButton button = new JButton(suggestion);
+			button.setName(suggestion);
+			suggestionsPanel.add(button);
+
+			button.addMouseListener(new MouseListener() {
 
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					String replacement = e.getComponent().getName();
-					textArea.setText(textArea.getText().replaceAll(wrongWord, replacement));
+					textArea.setText(textArea.getText().replaceAll("\\b" + wrongWord + "\\b", replacement));
 					clearSuggestionsPanel();
 				}
 
 				@Override
 				public void mouseEntered(MouseEvent arg0) {
 					// TODO Auto-generated method stub
-					
+
 				}
 
 				@Override
 				public void mouseExited(MouseEvent arg0) {
 					// TODO Auto-generated method stub
-					
+
 				}
 
 				@Override
 				public void mousePressed(MouseEvent arg0) {
 					// TODO Auto-generated method stub
-					
+
 				}
 
 				@Override
 				public void mouseReleased(MouseEvent arg0) {
 					// TODO Auto-generated method stub
-					
+
 				}
-    		});
-    		
-    	}
-    	frame.setVisible(true);
-    	frame.repaint();
-    }
-	
+			});
+
+		}
+		frame.setVisible(true);
+		frame.repaint();
+	}
+
 	public static void main(String[] args) {
 		ApplicationWindow window = new ApplicationWindow();
 		window.createStartPage();
@@ -266,40 +264,40 @@ public class ApplicationWindow implements MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		String name = e.getComponent().getName();
-		
+
 		switch (name) {
-			case "main-text-editor":
-				handleTextAreaClick(e);
+		case "main-text-editor":
+			handleTextAreaClick(e);
 		}
-		
+
 	}
-	
+
 	public Mistake getMistakeFromPoint(Point point) {
 		textArea.setCaretPosition(textArea.viewToModel(point));
-	    String currentWord = findCurrentWord(textArea);
-	    Mistake mistake = textAreaListener.mistakeFromWord(currentWord);
-	    return mistake;
+		String currentWord = findCurrentWord(textArea);
+		Mistake mistake = textAreaListener.mistakeFromWord(currentWord);
+		return mistake;
 	}
-	
+
 	protected String findCurrentWord(JTextArea ta) {
-        try {
-            int start = Utilities.getWordStart(ta, ta.getCaretPosition());
-            int end = Utilities.getWordEnd(ta, ta.getCaretPosition());
-            String text = ta.getDocument().getText(start, end - start);
-            return text;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        return "";
-    }
-	
+		try {
+			int start = Utilities.getWordStart(ta, ta.getCaretPosition());
+			int end = Utilities.getWordEnd(ta, ta.getCaretPosition());
+			String text = ta.getDocument().getText(start, end - start);
+			return text;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "";
+	}
+
 	public void clearSuggestionsPanel() {
 		suggestionsPanel.removeAll();
 		frame.setVisible(true);
 		frame.repaint();
 	}
-	
+
 	public void handleTextAreaClick(MouseEvent e) {
 		if (SwingUtilities.isRightMouseButton(e)) {
 			Mistake mistake = getMistakeFromPoint(e.getPoint());
@@ -315,25 +313,25 @@ public class ApplicationWindow implements MouseListener {
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
