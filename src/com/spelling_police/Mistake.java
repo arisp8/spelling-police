@@ -26,7 +26,7 @@ public class Mistake {
 	
 	public List<String> getSuggestions() {
 		if (suggestions == null) {
-			suggestions = Dictionary.getDictionary("el").similarList(word, 5);
+			suggestions = Dictionary.getDictionary("el").similarList(word, 3);
 		}
 		return suggestions;
 	}
