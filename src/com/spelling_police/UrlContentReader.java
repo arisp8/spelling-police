@@ -16,28 +16,28 @@ public class UrlContentReader {
    *@return String text
    */
 
-    public static String extractURLContents(String url) {
-
+	public static String extractURLContents(String url, boolean clean) {
+		String text = null;
 	    try {
 	    	URL website = new URL(url);
-          	URLConnection connection = website.openConnection();
-          	BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-          	String text = "";
+      		URLConnection connection = website.openConnection();
+      		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
           	String line;
 
 			while ((line = in.readLine()) != null) {
 			    text += line.toString();
 			}
+			
 			in.close();
-			return text;
 	    } catch(Exception e){
-	        return null;
+	        e.printStackTrace();
         }
-  }
-    
-    public static void main(String[] args) {
-      String test = extractURLContents("https://en.wikipedia.org/wiki/Athens_University_of_Economics_and_Business");
-      String clean = CustomHTMLParser.removeTags(test);
-      System.out.println("Clean text: " + clean);
-    }
+	    
+	    if (clean) {
+	    	text = CustomHTMLParser.removeTags(text);
+	    }
+	    
+	    return text;
+	}
+	
 }

@@ -4,6 +4,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -163,11 +164,15 @@ public class ApplicationWindow implements MouseListener {
         textArea.setRows(40);
         textArea.setWrapStyleWord(true);
         
+        textAreaListener = new TextAreaListener(textArea);
+        textArea.getDocument().addDocumentListener(textAreaListener);
+        
+        textArea.setText(defaultText);
+        
         mainPanel.setBackground(Color.WHITE);
         
         JScrollPane jScrollPane1 = new JScrollPane(textArea);
-        textAreaListener = new TextAreaListener(textArea);
-        textArea.getDocument().addDocumentListener(textAreaListener);
+        
         
     	textArea.addMouseListener(this);
     	
@@ -191,7 +196,20 @@ public class ApplicationWindow implements MouseListener {
     }
     
     public void loadFromRemoteURL() {
-    	// wip
+    	String url = (String)JOptionPane.showInputDialog(
+    	                    frame,
+    	                    "Enter the url:",
+    	                    "Load from URL",
+    	                    JOptionPane.PLAIN_MESSAGE,
+    	                    null, null, "");
+
+    	//If a string was returned, say so.
+    	if ((url != null) && (url.length() > 0)) {
+    	    String text = UrlContentReader.extractURLContents(url, true);
+    	    if (text != null) {
+    	    	createTextEditorPage(text);
+    	    }
+    	}
     }
 	
     public void fillSuggestionsPanel(List<String> suggestions) {
