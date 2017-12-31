@@ -212,12 +212,47 @@ public class ApplicationWindow implements MouseListener {
     	}
     }
 	
-    public void fillSuggestionsPanel(List<String> suggestions) {
+    public void fillSuggestionsPanel(List<String> suggestions, String wrongWord) {
     	suggestionsPanel.removeAll();
     	for (String suggestion : suggestions) {
     		JButton button = new JButton(suggestion);
     		button.setName(suggestion);
     		suggestionsPanel.add(button);
+    		
+    		button.addMouseListener(new MouseListener() {
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					String replacement = e.getComponent().getName();
+					textArea.setText(textArea.getText().replaceAll(wrongWord, replacement));
+					clearSuggestionsPanel();
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mouseExited(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mousePressed(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+    		});
+    		
     	}
     	frame.setVisible(true);
     	frame.repaint();
@@ -259,12 +294,20 @@ public class ApplicationWindow implements MouseListener {
         return "";
     }
 	
+	public void clearSuggestionsPanel() {
+		suggestionsPanel.removeAll();
+		frame.setVisible(true);
+		frame.repaint();
+	}
+	
 	public void handleTextAreaClick(MouseEvent e) {
 		if (SwingUtilities.isRightMouseButton(e)) {
 			Mistake mistake = getMistakeFromPoint(e.getPoint());
 			if (mistake != null) {
 				suggestionsPanel.setName(mistake.getWord());
-				fillSuggestionsPanel(mistake.getSuggestions());
+				fillSuggestionsPanel(mistake.getSuggestions(), mistake.getWord());
+			} else {
+				clearSuggestionsPanel();
 			}
 		}
 	}
