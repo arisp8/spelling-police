@@ -140,9 +140,9 @@ public class Dictionary {
 	 * @param fuzzyness Indicates how much tolerance the method should have for matching words
 	 * @return A HashMap of Strings and Integers with similar words and each levenshtein distance
 	 */
-	private HashMap<String,Integer> fuzzySearch(String word, double fuzzyness) {
-
-		HashMap<String,Integer> foundWords = new HashMap<String,Integer>();
+	private HashMap<String,Double> fuzzySearch(String word, double fuzzyness, boolean strict) {
+		
+		HashMap<String,Double> foundWords = new HashMap<String,Double>();
 
 		// Makes sure loading of dictionary has finished
 		try {
@@ -153,6 +153,11 @@ public class Dictionary {
 		}
 
 	    for (String s : wordList) {
+	    	
+	    	if (strict && s.charAt(0) != word.charAt(0)) {
+	    		continue;
+	    	}
+	    	
 	        // Calculate the Levenshtein distance:
 	        int levenshteinDistance = levenshteinDistance(word, s);
 
@@ -164,7 +169,7 @@ public class Dictionary {
 
 	        // Match?
 	        if (score > fuzzyness) {
-	            foundWords.put(s,levenshteinDistance);
+	            foundWords.put(s,score);
 	        }
 	    }
 
@@ -173,31 +178,30 @@ public class Dictionary {
 
   public List<String> similarList (String word , int limit){
 
-        HashMap<String,Integer> foundWords = new HashMap<String,Integer>();
-
-        //defines fuzzyness
-        double fuzzyness = 0.80;
+        HashMap<String,Double> foundWords = new HashMap<String,Double>();
+        
+       double fuzzyness = 0.7;
+       boolean strict = true;
 
        do {
-           foundWords = this.fuzzySearch(word,fuzzyness);
-
+           foundWords = this.fuzzySearch(word, fuzzyness, strict);
 		   fuzzyness -= 0.05;
 		} while(foundWords.size() < limit);
 
-		 Object[] a = foundWords.entrySet().toArray();
+		 Object[] a = foundWords.entrySet().toArray(); 
+		 
 		 Arrays.sort(a, new Comparator() {
 		     public int compare(Object o1, Object o2) {
-		         return ((Map.Entry<String, Integer>) o2).getValue()
-		                    .compareTo(((Map.Entry<String, Integer>) o1).getValue());
+		         return ((Map.Entry<String, Double>) o2).getValue()
+		                    .compareTo(((Map.Entry<String, Double>) o1).getValue());
 		     }
 		 });
+		 
 		 List<String> similarList = new ArrayList<String>();
 		 
-		 for (int i = (a.length -1); i > (a.length - limit); i--) {
-			similarList.add(((Map.Entry<String, Integer>) a[i]).getKey());
+		 for (int i = 0; i < limit; i++) {
+			similarList.add(((Map.Entry<String, Double>) a[i]).getKey());
 		 }
-
-		
 
         return similarList;
 	}
