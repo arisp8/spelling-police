@@ -37,6 +37,16 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.JFileChooser;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Scanner;
+import java.util.stream.Stream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 //import java.awt.event.*;
 
 public class ApplicationWindow implements MouseListener {
@@ -194,9 +204,20 @@ public class ApplicationWindow implements MouseListener {
 	}
 
 	public void loadFileFromSystem() {
-		// wip
+		
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+		int result = fileChooser.showOpenDialog(frame);
+		if (result == JFileChooser.APPROVE_OPTION) {
+		   File selectedFile = fileChooser.getSelectedFile();
+		   String filePath =selectedFile.toString();
+		   String text = Input.inFile(filePath);
+		   createTextEditorPage(text);
+		}
 	}
-
+	
+	
+	
 	public void loadFromRemoteURL() {
 		String url = (String) JOptionPane.showInputDialog(frame, "Enter the url:", "Load from URL",
 				JOptionPane.PLAIN_MESSAGE, null, null, "");

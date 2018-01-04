@@ -32,13 +32,20 @@ public class Input {
 		try{
 			BufferedReader buffread = new BufferedReader(new FileReader(fileName));//declare BufferedReader object and instance it
 			String text= buffread.readLine();//get the text from file
+			String contentLine = text;
+			while (text != null) {
+				contentLine = contentLine + text;
+				text= buffread.readLine();
+			}
 			buffread.close();
-			return text;
+			return contentLine;
 		} catch(IOException ex){
 			System.out.println("Could not find file " );
 			return null;
 		}
 	}
+	
+	
 	public static void main(String args[]) {
 		String test = keyboard();
 		System.out.println(test);
