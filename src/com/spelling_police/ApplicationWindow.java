@@ -63,7 +63,7 @@ public class ApplicationWindow implements MouseListener {
 	 * Creates the GUI for the starting page that appears when a user runs the
 	 * application.
 	 */
-	private void createStartPage() {
+	public void createStartPage() {
 		updatePage();
 
 		// Create and set up the window.
