@@ -30,15 +30,15 @@ public class Input {
 	public static String inFile(String fileName){
 
 		try{
-			BufferedReader buffread = new BufferedReader(new FileReader(fileName));//declare BufferedReader object and instance it
-			String text= buffread.readLine();//get the text from file
-			String contentLine = text;
+			BufferedReader buffread = new BufferedReader(new FileReader(fileName));
+			String text= buffread.readLine();
+			String content = "";
 			while (text != null) {
-				contentLine = contentLine + text;
+				content = content + text;
 				text= buffread.readLine();
 			}
 			buffread.close();
-			return contentLine;
+			return content;
 		} catch(IOException ex){
 			System.out.println("Could not find file " );
 			return null;
