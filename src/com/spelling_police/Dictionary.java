@@ -69,8 +69,6 @@ public class Dictionary {
 
 	        // Calculate the score:
 	        double score = 1.0 - (double)levenshteinDistance / length;
-        	
-	        System.out.println(word + "--" + s);
 	        
 	        // Match?
 	        if (score > fuzzyness) {
@@ -215,9 +213,6 @@ public class Dictionary {
            foundWords = this.fuzzySearch(word, fuzzyness, strict);
 		   fuzzyness -= 0.05;
 		} while(foundWords.size() < limit);
-       	
-       
-       System.out.println(foundWords);
        
 		 Object[] a = foundWords.entrySet().toArray(); 
 		 
@@ -235,17 +230,6 @@ public class Dictionary {
 		 }
 
         return similarList;
-	}
-
-
-
-	public static void main(String[] args) {
-		System.out.println(System.getProperty("user.dir"));
-        Dictionary dict = new Dictionary("el");
-
-        List<String> option= dict.similarList("����",5);
-
-		System.out.println(option);
 	}
 
 }
