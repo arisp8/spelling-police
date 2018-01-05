@@ -9,11 +9,10 @@ import java.util.regex.Matcher;
  */
 public class Parser {
 
-	private String language;
 	private static Pattern pattern = Pattern.compile("[0-9.,\\[\\]\\(\\)\\/%«»]+");
 
-	public Parser(String language) {
-		this.language = language;
+	public Parser() {
+		
 	}
 /*A privat method that seperates a given text/string into individual periods and
 * inserts them in an ArrayList.
