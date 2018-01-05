@@ -2,6 +2,7 @@ package com.spelling_police;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.TreeMap;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -12,9 +13,10 @@ import java.util.Comparator;
 
 public class Dictionary {
 	
-	private static final int FUZZY_LIMIT = 20;
 	private String language;
 	private TreeSet<String> wordList;
+	private TreeMap<Character, String> firstWords = new TreeMap<Character, String>();
+	private TreeMap<Character, String> lastWords = new TreeMap<Character, String>();
 	private Config config;
 
 	private Thread loadThread;
@@ -35,6 +37,8 @@ public class Dictionary {
 				wordList = readDictionary(path, encoding);
 			}
 		};
+		
+		
 		loadThread.start();
 	}
 	
@@ -42,47 +46,8 @@ public class Dictionary {
 		return this.language;
 	}
 	
-	public boolean findOneWord(String word) {
-			
-		boolean matchedWord = false;
-
-		// Makes sure loading of dictionary has finished
-		try {
-			loadThread.join();
-		} catch (InterruptedException e) {
-			System.out.println(e.getMessage());
-			return matchedWord;
-		}
-		
-		double fuzzyness = 0.6;
-		
-	    for (String s : wordList) {
-    		
-	    	if (s.charAt(0) != word.charAt(0)) {
-	    		continue;
-	    	}
-	    	
-	        // Calculate the Levenshtein distance:
-	        int levenshteinDistance = levenshteinDistance(word, s);
-
-	        // Length of the longer string:
-	        int length = Math.max(word.length(), s.length());
-
-	        // Calculate the score:
-	        double score = 1.0 - (double)levenshteinDistance / length;
-	        
-	        // Match?
-	        if (score > fuzzyness) {
-	        	return true;
-	        }
-	    }
-
-	    return matchedWord;
-	}
-	
 	public static Dictionary getDictionary(String language) {
 		if (!activeDictionaries.containsKey(language)) {
-			System.out.println("Loading dictionary anew");
 			activeDictionaries.put(language, new Dictionary(language));
 		}
 		
@@ -98,9 +63,20 @@ public class Dictionary {
 		TreeSet<String> words = new TreeSet<>();
 
 		try (Scanner scan  = new Scanner(new File(filePath), encoding)) {
+			char previousChar = ' ';
+			String previousWord = "";
+			String word;
 			while (scan.hasNext()) {
-				words.add(scan.next());
+				word = scan.next();
+				if (word.charAt(0) != previousChar) {
+					firstWords.put(word.charAt(0), word);
+					lastWords.put(previousChar, previousWord);
+					previousChar = word.charAt(0);
+				}
+				words.add(word);
+				previousWord = word;
 			}
+			lastWords.put(firstWords.lastKey(), previousWord);
 		} catch (Exception e) {
 			System.out.println("An exception has happened while reading the dictionary: "
 								+ e.getMessage());
@@ -126,7 +102,10 @@ public class Dictionary {
 
 		if (this.wordList.contains(word)) {
 			return true;
-		} else if(this.wordList.contains(word.toLowerCase())) {
+		} else if (this.wordList.contains(word.toLowerCase())) {
+			return true;
+		} else if (!firstWords.containsKey(word.charAt(0))) {
+			// If a word is not from the current character space don't treat it as a mistake.
 			return true;
 		} else {
 			return false;
@@ -158,7 +137,15 @@ public class Dictionary {
 
 		return(distance[src.length()][dest.length()]);
     }
-
+	
+	private String getFirstWord(char letter) {
+		return this.firstWords.get(letter);
+	}
+	
+	private String getLastWord(char letter) {
+		return this.lastWords.get(letter);
+	}
+	
 	/**
 	 * Performs a search based on a string that will match similar words
 	 * @param word The word to search for
@@ -177,16 +164,14 @@ public class Dictionary {
 			return foundWords;
 		}
 		
-	    for (String s : wordList) {
-	    	
-	    	if (foundWords.size() > FUZZY_LIMIT) {
-	    		System.out.println("Limit reached");
-	    		return foundWords;
-	    	}
-	    	
-	    	if (strict && s.charAt(0) != word.charAt(0)) {
-	    		continue;
-	    	}
+		String firstWord = getFirstWord(word.charAt(0));
+		String lastWord = getLastWord(word.charAt(0));
+		
+		if (!firstWords.containsKey(word.charAt(0)) || !lastWords.containsKey(word.charAt(0))) {
+			return null;
+		}
+		
+	    for (String s : wordList.subSet(firstWord, lastWord)) {
 	    	
 	        // Calculate the Levenshtein distance:
 	        int levenshteinDistance = levenshteinDistance(word, s);
@@ -216,7 +201,11 @@ public class Dictionary {
        do {
            foundWords = this.fuzzySearch(word, fuzzyness, strict);
 		   fuzzyness -= 0.05;
-		} while(foundWords.size() < limit);
+		} while(foundWords != null && foundWords.size() < limit);
+       	
+       if (foundWords == null) {
+    	   return null;
+       }
        
 		 Object[] a = foundWords.entrySet().toArray(); 
 		 
