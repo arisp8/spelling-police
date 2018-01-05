@@ -14,7 +14,7 @@ public class Dictionary {
 
 	private String language;
 	private TreeSet<String> wordList;
-	private HashMap<String, String> config;
+	private Config config;
 
 	private Thread loadThread;
 	
@@ -26,10 +26,8 @@ public class Dictionary {
 	public Dictionary(String language) {
 		this.language = language;
 		final String path = System.getProperty("user.dir") + "\\resources\\dictionaries\\" + language + ".txt";
-		String configPath = System.getProperty("user.dir") + "\\resources\\config\\" + language + ".info";
-
-		this.config = getConfig(configPath);
-		final String encoding = this.config.get("encoding");
+		this.config = new Config(language);
+		final String encoding = this.config.getEncoding();
 
 		loadThread = new Thread() {
 			public void run() {
@@ -39,31 +37,59 @@ public class Dictionary {
 		loadThread.start();
 	}
 	
+	public String getLanguage() {
+		return this.language;
+	}
+	
+	public boolean findOneWord(String word) {
+			
+		boolean matchedWord = false;
+
+		// Makes sure loading of dictionary has finished
+		try {
+			loadThread.join();
+		} catch (InterruptedException e) {
+			System.out.println(e.getMessage());
+			return matchedWord;
+		}
+		
+		double fuzzyness = 0.6;
+		
+	    for (String s : wordList) {
+    		
+	    	if (s.charAt(0) != word.charAt(0)) {
+	    		continue;
+	    	}
+	    	
+	        // Calculate the Levenshtein distance:
+	        int levenshteinDistance = levenshteinDistance(word, s);
+
+	        // Length of the longer string:
+	        int length = Math.max(word.length(), s.length());
+
+	        // Calculate the score:
+	        double score = 1.0 - (double)levenshteinDistance / length;
+        	
+	        System.out.println(word + "--" + s);
+	        
+	        // Match?
+	        if (score > fuzzyness) {
+	        	return true;
+	        }
+	    }
+
+	    return matchedWord;
+	}
+	
 	public static Dictionary getDictionary(String language) {
 		if (!activeDictionaries.containsKey(language)) {
+			System.out.println("Loading dictionary anew");
 			activeDictionaries.put(language, new Dictionary(language));
 		}
 		
 		return activeDictionaries.get(language);
 	}
 	
-	private HashMap<String, String> getConfig(String filePath) {
-		HashMap<String, String> config = new HashMap<String, String>();
-
-		try (Scanner scan  = new Scanner(new File(filePath), "utf-8")) {
-			while (scan.hasNext()) {
-				String line = scan.next();
-				String[] components = line.split(":");
-				config.put(components[0], components[1]);
-			}
-		} catch (Exception e) {
-			System.out.println("Something went wrong when opening config file: " + e.getMessage());
-		}
-
-
-		return config;
-	}
-
 	/**
 	 * Reads a dictionary from a file and converts it to an ArrayList
 	 * @param filePath The path where the dictionary file should be found
@@ -151,7 +177,9 @@ public class Dictionary {
 			System.out.println(e.getMessage());
 			return foundWords;
 		}
-
+		
+		System.out.println(wordList);
+		
 	    for (String s : wordList) {
 	    	
 	    	if (strict && s.charAt(0) != word.charAt(0)) {
@@ -187,7 +215,10 @@ public class Dictionary {
            foundWords = this.fuzzySearch(word, fuzzyness, strict);
 		   fuzzyness -= 0.05;
 		} while(foundWords.size() < limit);
-
+       	
+       
+       System.out.println(foundWords);
+       
 		 Object[] a = foundWords.entrySet().toArray(); 
 		 
 		 Arrays.sort(a, new Comparator() {
