@@ -23,7 +23,6 @@ public class Mistake {
 		this.sentence = sentence;
 		this.position = position;
 		this.language = language;
-		System.out.println(word + "--" + language);
 	}
 	
 	public List<String> getSuggestions() {

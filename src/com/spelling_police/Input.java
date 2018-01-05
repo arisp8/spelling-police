@@ -5,8 +5,10 @@ package com.spelling_police;
  */
 import java.util.Scanner;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Input {
 
@@ -27,10 +29,10 @@ public class Input {
 	 *read from file
 	 *@return String text
 	 */
-	public static String inFile(String fileName){
+	public static String inFile(String fileName, String encoding){
 
 		try{
-			BufferedReader buffread = new BufferedReader(new FileReader(fileName));
+			BufferedReader buffread = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), encoding));
 			String text= buffread.readLine();
 			String content = "";
 			while (text != null) {

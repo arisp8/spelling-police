@@ -11,7 +11,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class Dictionary {
-
+	
+	private static final int FUZZY_LIMIT = 20;
 	private String language;
 	private TreeSet<String> wordList;
 	private Config config;
@@ -176,9 +177,12 @@ public class Dictionary {
 			return foundWords;
 		}
 		
-		System.out.println(wordList);
-		
 	    for (String s : wordList) {
+	    	
+	    	if (foundWords.size() > FUZZY_LIMIT) {
+	    		System.out.println("Limit reached");
+	    		return foundWords;
+	    	}
 	    	
 	    	if (strict && s.charAt(0) != word.charAt(0)) {
 	    		continue;

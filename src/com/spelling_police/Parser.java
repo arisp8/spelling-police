@@ -9,7 +9,8 @@ import java.util.regex.Matcher;
  */
 public class Parser {
 
-	private static Pattern pattern = Pattern.compile("[0-9.,\\[\\]\\(\\)\\/%«»]+");
+	private static Pattern pattern = Pattern.compile("^[^A-Za-zΑ-Ωα-ωά-ώΐϊϋ]{1,}$");
+	private static Pattern endOfSentence = Pattern.compile("([\\.!\\?;]){1,}(\\s+[Α-ΖΑ-Ω]|$)");
 
 	public Parser() {
 		
@@ -18,13 +19,21 @@ public class Parser {
 * inserts them in an ArrayList.
 */
 	private  ArrayList<String> splitIntoSentences(String text) {
-			ArrayList<String> periods = new ArrayList<String>();
-			String[] arrayPeriods = text.split("[\\.\\!\\?\\;]");
+		ArrayList<String> sentences = new ArrayList<String>();
+		Matcher match = endOfSentence.matcher(text);
 
-			for (int i=0; i<arrayPeriods.length; i++) {
-				periods.add(arrayPeriods[i]);
-		    }
-			return periods;
+		int last_index = 0;
+		
+		while (match.find()) {
+			sentences.add(text.substring(last_index, match.start()));
+			last_index = match.start() + 1;
+		}
+
+		if (last_index < text.length()) {
+			sentences.add(text.substring(last_index, text.length()));
+		}
+
+		return sentences;
 	}
 	
 
@@ -32,7 +41,6 @@ public class Parser {
 	 *those that are.
 	 */
 	private boolean isWord(String element) {
-
 		if (element.length() == 0) {
 			return false;
 		}

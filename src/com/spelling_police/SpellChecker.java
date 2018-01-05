@@ -5,9 +5,8 @@ import java.util.List;
 
 public class SpellChecker {
 
-	private ArrayList<Dictionary> dictionaries = new ArrayList<Dictionary>();
 	private Parser parser;
-
+	private Dictionary dict;
 	/**
 	 * Default constructor for SpellChecker
 	 * 
@@ -16,11 +15,7 @@ public class SpellChecker {
 	 */
 
 	public SpellChecker() {
-
-		// Initialize required components
-		for (String language : Config.getActiveLanguages()) {
-			dictionaries.add(Dictionary.getDictionary(language));
-		}
+		dict = Dictionary.getDictionary(Config.getActiveLanguageConfig().getLanguageCode());
 		parser = new Parser();
 	}
 
@@ -62,13 +57,10 @@ public class SpellChecker {
 	 */
 	public Mistake singleWordCheck(String word, int sentence, int position) {
 		Mistake wrongWord = null;
-		for (Dictionary dict : dictionaries) {
-			System.out.println(dict.findOneWord(word));
-			if (dict.wordExists(word)) {
-				return null;
-			} else {
-				wrongWord = new Mistake(word, dict.getLanguage(), sentence, position);
-			}
+		if (dict.wordExists(word)) {
+			return null;
+		} else {
+			wrongWord = new Mistake(word, dict.getLanguage(), sentence, position);
 		}
 		return wrongWord;
 	}

@@ -11,43 +11,44 @@ public class Config {
 	
 	private String encoding;
 	private String displayName;
+	private String languageCode;
 	private boolean active;
 	
 	private static HashMap<String, Config> availableLanguages = new HashMap<String, Config>();
-	private static ArrayList<String> activeLanguages = new ArrayList<String>();
+	private static String activeLanguage = "";
 	
 	public static void bootstrap() {
-		
-		activeLanguages = findActiveLanguages();
+		activeLanguage = findActiveLanguage();
 		
 		File folder = new File(System.getProperty("user.dir") + "\\resources\\config\\");
 		for (final File fileEntry : folder.listFiles()) {
             
-			if (fileEntry.getName().equals("active_languages.txt")) {
+			if (fileEntry.getName().equals("active_language.txt")) {
 				continue;
 			}
 			
 			String languageName = fileEntry.getName().replaceAll(".info", "");
-            boolean active = activeLanguages.contains(languageName);
+            boolean active = activeLanguage.equals(languageName);
 			Config config = new Config(languageName, active);
 			availableLanguages.put(languageName, config);
 	    }
 	}
 	
-	private static ArrayList<String> findActiveLanguages() {
-		ArrayList<String> languages = new ArrayList<String>();
-		File languagesFile = new File(System.getProperty("user.dir") + "\\resources\\config\\active_languages.txt");
+	private static String findActiveLanguage() {
+		File languagesFile = new File(System.getProperty("user.dir") + "\\resources\\config\\active_language.txt");
+		String language = "";
 		
 		try {
 			Scanner scan = new Scanner(languagesFile);
-			while (scan.hasNext()) {
-				languages.add(scan.next());
+			if (scan.hasNext()) {
+				language = scan.next();
 			}
+			scan.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		return languages;
+		return language;
 	}
 	
 	public Config(String language) {
@@ -57,6 +58,7 @@ public class Config {
 	public Config(String language, boolean active) {
 		String configPath = System.getProperty("user.dir") + "\\resources\\config\\" + language + ".info";
 		HashMap<String, String> fileConfig = loadConfig(configPath);
+		this.languageCode = language;
 		this.encoding = fileConfig.get("encoding");
 		this.displayName = fileConfig.get("display_name");
 		this.active = active;
@@ -86,8 +88,12 @@ public class Config {
 		return this.encoding;
 	}
 	
-	public static ArrayList<String> getActiveLanguages() {
-		return activeLanguages;
+	public String getLanguageCode() {
+		return this.languageCode;
+	}
+	
+	public static Config getActiveLanguageConfig() {
+		return availableLanguages.get(activeLanguage);
 	}
 	
 }
