@@ -9,6 +9,7 @@ import java.util.List;
 public class Mistake {
 		
 	private String word;
+	private String language;
 	private List<String> suggestions;
 	private List<Integer> wrongPositions;
 	
@@ -17,16 +18,17 @@ public class Mistake {
 	private int position;
 	private int sentence;
 	
-	
 	public Mistake(String word, String language, int sentence, int position){
 		this.word = word;
 		this.sentence = sentence;
 		this.position = position;
+		this.language = language;
+		System.out.println(word + "--" + language);
 	}
 	
 	public List<String> getSuggestions() {
 		if (suggestions == null) {
-			suggestions = Dictionary.getDictionary("el").similarList(word, 3);
+			suggestions = Dictionary.getDictionary(this.language).similarList(word, 3);
 		}
 		return suggestions;
 	}
@@ -38,22 +40,13 @@ public class Mistake {
 		return wrongPositions;
 	}
 	
+	/**
+	 * word : The word the user inputs OR one of the words of a String the user inputs
+	 * suggestions : The list of the classified suggestions taken by Solver class.
+	 * suggestions.get(1) : The best result. 
+	 */
 	public List<Integer> findWrongPosition(String word){
-		/**
-		 * word : The word the user inputs OR one of the words of a String the user inputs
-		 * suggestions : The list of the classified suggestions taken by Solver class.
-		 * suggestions.get(1) : The best result. 
-		 */
-
-		if (suggestions == null){
-			suggestions = Dictionary.getDictionary("el").similarList(word, 5);
-		}
-		
-		return wrongPositions = indexOfDifference(word , suggestions.get(0));
-		// If the two words are the same or one of them is null then the word given is not wrong
-		/*if (x == -1 || x == 0){
-			System.out.println("The word is not wrong");
-		}*/
+		return wrongPositions = indexOfDifference(word, this.getSuggestions().get(0));
 	}
 	public static List<Integer> indexOfDifference(String word1, String word2) {
 		List<Integer> positions = new ArrayList<Integer>();
