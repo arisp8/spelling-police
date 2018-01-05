@@ -34,8 +34,8 @@ public class TextAreaListener implements DocumentListener {
 	public TextAreaListener(JTextArea textArea) {
 		this.textArea = textArea;
 		mistakesFound = new HashMap<String, Mistake>();
-		spellCheck = new SpellChecker("el");
-		parser = new Parser("el");
+		spellCheck = new SpellChecker();
+		parser = new Parser();
 	}
 	
 	@Override
