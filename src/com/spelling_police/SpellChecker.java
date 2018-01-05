@@ -16,7 +16,7 @@ public class SpellChecker {
 		
 		// Initialize required components
 		dict = Dictionary.getDictionary("el");
-		parser = new Parser(language);
+		parser = new Parser();
 	}
 	
 	/** Method that creates an ArrayList which contains all the wrong words

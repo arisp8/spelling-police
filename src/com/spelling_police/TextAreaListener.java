@@ -35,7 +35,7 @@ public class TextAreaListener implements DocumentListener {
 		this.textArea = textArea;
 		mistakesFound = new HashMap<String, Mistake>();
 		spellCheck = new SpellChecker("el");
-		parser = new Parser("el");
+		parser = new Parser();
 	}
 	
 	@Override
