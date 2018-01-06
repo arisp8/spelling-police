@@ -4,20 +4,25 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 /*
- * Parser splits Strings into individual words and inserts them in an Arraylist.
- * The method returns the ArrayList 'word'.
+ * Parser splits Strings into periods and then the periods into individual words
+ * and inserts them in an Arraylist of ArrayLists.That means that every ArrayList represents
+ * a period of the original text and every element in it represents a words in that period.
  */
+
 public class Parser {
 
+	private String language;
 	private static Pattern pattern = Pattern.compile("^[^A-Za-zΑ-Ωα-ωά-ώΐϊϋ]{1,}$");
 	private static Pattern endOfSentence = Pattern.compile("([\\.!\\?;]){1,}(\\s+[Α-ΖΑ-Ω]|$)");
 
-	public Parser() {
-		
+	public Parser(String language) {
+		this.language = language;
 	}
-/*A privat method that seperates a given text/string into individual periods and
-* inserts them in an ArrayList.
-*/
+
+/*
+ *splitIntoSentences: A private method that seperates a given text/string into individual periods and
+ * inserts them in an ArrayList.
+ */
 	private  ArrayList<String> splitIntoSentences(String text) {
 		ArrayList<String> sentences = new ArrayList<String>();
 		Matcher match = endOfSentence.matcher(text);
@@ -36,10 +41,10 @@ public class Parser {
 		return sentences;
 	}
 	
-
-	/* isWord: A method to determine if the element in question is a word or not and returns
-	 *those that are.
-	 */
+/* 
+ * isWord: A private method to determine if the element in question is a word or not and returns
+ *true or false depending on the outcome.
+ */
 	private boolean isWord(String element) {
 		if (element.length() == 0) {
 			return false;
@@ -48,8 +53,10 @@ public class Parser {
 		Matcher matcher = pattern.matcher(element);
 		return !matcher.find();
 	}
-	
-	// Splits text into individual sentences & words.
+/*
+ * separate: A public method that splits every period of the given text into individual words and
+ * inserts them,after using the 'isWord' method in the ArrayList of ArrayLists 'result'.
+ */
 	public ArrayList<ArrayList<String>> separate(String text){
 		
 		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
@@ -61,6 +68,7 @@ public class Parser {
 			ArrayList<String> words = new ArrayList<String>();
 			
 			for (int i=0; i < elements.length; i++){
+				elements[i] = elements[i].replaceAll("(?:[a-zA-Zα-ωΑ-Ω]\\.){2,}+","");
 				elements[i] = elements[i].replaceAll("[-.,!;?:\\(\\)\\[\\]]", "");
 
 				if (isWord(elements[i])) {
@@ -72,5 +80,4 @@ public class Parser {
 		
 		return result;
 	}
-
 }
