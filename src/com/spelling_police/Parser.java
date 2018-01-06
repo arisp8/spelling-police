@@ -11,13 +11,10 @@ import java.util.regex.Matcher;
 
 public class Parser {
 
-	private String language;
+	
 	private static Pattern pattern = Pattern.compile("^[^A-Za-zΑ-Ωα-ωά-ώΐϊϋ]{1,}$");
 	private static Pattern endOfSentence = Pattern.compile("([\\.!\\?;]){1,}(\\s+[Α-ΖΑ-Ω]|$)");
 
-	public Parser(String language) {
-		this.language = language;
-	}
 
 /*
  *splitIntoSentences: A private method that seperates a given text/string into individual periods and
