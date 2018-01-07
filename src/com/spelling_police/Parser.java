@@ -50,10 +50,6 @@ public class Parser {
 			return false;
 		}
 		
-		if (acronyms.matcher(element).find()) {
-			return false;
-		}
-		
 		return true;
 	}
 
@@ -72,7 +68,16 @@ public class Parser {
 			ArrayList<String> words = new ArrayList<String>();
 			
 			for (int i=0; i < elements.length; i++){
-
+				
+				// Skip acronyms
+				if (acronyms.matcher(elements[i]).find()) {
+					continue;
+				}
+				
+				// Having asserted that the current element is not an acronym, it's safe now to remove
+				// any punctuation.
+				elements[i] = elements[i].replaceAll("\\p{P}", "");
+				
 				if (isWord(elements[i])) {
 					words.add(elements[i]);
 				}
