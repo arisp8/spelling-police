@@ -51,18 +51,29 @@ public class SpellChecker {
 
 	/**
 	 * Checks the spelling of a single word
-	 * @param checkWord The word to be checked
+	 * @param word The word to be checked
 	 * @return a Mistake object if the word is not contained in the dictionary
 	 * or null if the word is contained
 	 */
-	public Mistake singleWordCheck(String word, int sentence, int position) {
+	public Mistake singleWordCheck(String word, int sentence, int position, boolean strict) {
 		Mistake wrongWord = null;
-		if (dict.wordExists(word)) {
+		
+		// When strict is enabled it means that the word probably hasn't been validated already.
+		if (strict && !this.parser.isWord(word)) {
 			return null;
-		} else {
+		}
+		
+		if (!dict.wordExists(word)) {
 			wrongWord = new Mistake(word, dict.getLanguage(), sentence, position);
 		}
 		return wrongWord;
+	}
+	
+	/**
+	 * Wrapper method for singleWordCheck. When no value is given for strict we default to false.
+	 */
+	public Mistake singleWordCheck(String word, int sentence, int position) {
+		return this.singleWordCheck(word, sentence, position, false);
 	}
 
 }
