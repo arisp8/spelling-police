@@ -72,14 +72,14 @@ public class TextAreaListener implements DocumentListener {
 				
 				if (Character.isLetterOrDigit(lastChar)) {
 					currentWord = findCurrentWord(this.textArea);
-				} else if (currentWord != "" && currentWord != null) {
-					Mistake currentMistake = spellCheck.singleWordCheck(currentWord, sentenceCount, wordCount);
+				} else if (lastChar == ' ' || lastChar == ',' || lastChar == '\n') {
+					currentWord = currentWord.replace(',', '\0');
+					// Call singleWordCheck with strict enabled to make sure everything works correctly.
+					Mistake currentMistake = spellCheck.singleWordCheck(currentWord, sentenceCount, wordCount, true);
 					
 					if (currentMistake != null) {
 						mistakesFound.put(currentWord, currentMistake);
 					}
-					
-					currentWord = "";
 					
 					if (isPunctuation(lastChar)) {
 						sentenceCount++;
@@ -106,8 +106,10 @@ public class TextAreaListener implements DocumentListener {
         hl.removeAllHighlights();
         
 		for (String word : mistakesFound.keySet()) {                          
-            
-            Matcher m = Pattern.compile(word + "[-\\s.?;:]").matcher(text);
+            // In order to avoid matching substrings in other words, we make sure
+			// to only highlight words that are followed by either whitespace or 
+			// punctuation.
+            Matcher m = Pattern.compile(word + "[\\s\\p{P}]").matcher(text);
             
             while (m.find()) {
             	try {
