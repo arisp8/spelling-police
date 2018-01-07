@@ -1,4 +1,5 @@
 package com.spelling_police;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -30,6 +31,7 @@ import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
@@ -167,13 +169,15 @@ public class ApplicationWindow implements MouseListener {
 		updatePage();
 
 		JPanel mainPanel = new JPanel();
-		JLabel textLabel = new JLabel("Enter your text");
 		textArea = new JTextArea();
 
 		textArea.setName("main-text-editor");
 		textArea.setColumns(70);
 		textArea.setLineWrap(true);
-		textArea.setRows(40);
+		Font font = textArea.getFont();
+		float size = 16.0f;
+		textArea.setFont(font.deriveFont(size));
+		textArea.setRows(30);
 		textArea.setWrapStyleWord(true);
 
 		textAreaListener = new TextAreaListener(textArea);
@@ -187,12 +191,11 @@ public class ApplicationWindow implements MouseListener {
 
 		textArea.addMouseListener(this);
 
-		mainPanel.add(textLabel);
 		mainPanel.add(jScrollPane1);
 
 		suggestionsPanel = new JPanel();
 
-		frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
+		frame.getContentPane().add(mainPanel, BoxLayout.X_AXIS);
 		frame.getContentPane().add(suggestionsPanel, BorderLayout.AFTER_LAST_LINE);
 		frame.setVisible(true);
 		frame.repaint();
@@ -275,11 +278,6 @@ public class ApplicationWindow implements MouseListener {
 		}
 		frame.setVisible(true);
 		frame.repaint();
-	}
-
-	public static void main(String[] args) {
-		ApplicationWindow window = new ApplicationWindow();
-		window.createStartPage();
 	}
 
 	@Override
