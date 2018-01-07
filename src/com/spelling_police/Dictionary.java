@@ -99,17 +99,21 @@ public class Dictionary {
 			System.out.println(e.getMessage());
 			return false;
 		}
-
-		if (this.wordList.contains(word)) {
-			return true;
-		} else if (this.wordList.contains(word.toLowerCase())) {
-			return true;
+		
+		
+		if (word.length() == 0) {
+			return false;
 		} else if (!firstWords.containsKey(word.charAt(0))) {
 			// If a word is not from the current character space don't treat it as a mistake.
+			return true;
+		} else if (this.wordList.contains(word)) {
+			return true;
+		} else if (this.wordList.contains(word.toLowerCase())) {
 			return true;
 		} else {
 			return false;
 		}
+		
 	}
 
 	/**
