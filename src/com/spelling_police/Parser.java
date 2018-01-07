@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 
 public class Parser {
 
-	private static Pattern pattern = Pattern.compile("^[^A-Za-zΑ-Ωα-ωά-ώΐϊϋ]{1,}$");
+	private static Pattern pattern = Pattern.compile("^[^A-Za-zΑ-Ωα-ωά-ώΐϊϋ\\p{P}]{1,}$");
 	private static Pattern endOfSentence = Pattern.compile("([\\.!\\?;]){1,}(\\s+[Α-ΖΑ-Ω]|$)");
 	private static Pattern acronyms = Pattern.compile("(?:[a-zA-Zα-ωΑ-Ω]\\.){2,}");
 /*
@@ -46,6 +46,10 @@ public class Parser {
 			return false;
 		}
 		
+		if (acronyms.matcher(element).find()) {
+			return false;
+		}
+		
 		if (pattern.matcher(element).find()) {
 			return false;
 		}
@@ -69,16 +73,10 @@ public class Parser {
 			
 			for (int i=0; i < elements.length; i++){
 				
-				// Skip acronyms
-				if (acronyms.matcher(elements[i]).find()) {
-					continue;
-				}
-				
 				// Having asserted that the current element is not an acronym, it's safe now to remove
 				// any punctuation.
-				elements[i] = elements[i].replaceAll("\\p{P}", "");
-				
 				if (isWord(elements[i])) {
+					elements[i] = elements[i].replaceAll("\\p{P}", "");
 					words.add(elements[i]);
 				}
 			}
