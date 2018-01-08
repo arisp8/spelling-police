@@ -9,9 +9,10 @@ import java.util.Map;
 
 public class Solver {
 	
-	private String language; 
+	 
+	static HashMap<String,List<String>> foundSuggestions = new HashMap<String,List<String>>();
 	
-	private  HashMap<String,List<String>> findBestSuggestions (String word , int limit){ //returns the wrong word with correct suggestions 
+	public static  List<String> findBestSuggestions (String word , int limit,String language){ //returns the wrong word with correct suggestions 
         
 		Dictionary dict= Dictionary.getDictionary(language);
 		
@@ -19,15 +20,19 @@ public class Solver {
         
         double fuzzyness = 0.7;
         boolean strict = true;
-
-           do {
-               foundWords = dict.fuzzySearch(word, fuzzyness, strict);
-		       fuzzyness -= 0.05;
-		   } while(foundWords != null && foundWords.size() < limit);
+     
+        if (foundSuggestions.containsKey(word)){
+        	return foundSuggestions.get(word);
+        } else {
+                 do {
+                    foundWords = dict.fuzzySearch(word, fuzzyness, strict);
+		             fuzzyness -= 0.05;
+		            } while(foundWords != null && foundWords.size() < limit);
        	
-           if (foundWords == null) {
-    	       return null;
-           }
+                 if (foundWords == null) {
+    	             return null;
+                 }
+         }
        
 		 Object[] a = foundWords.entrySet().toArray(); 
 		 
@@ -43,10 +48,11 @@ public class Solver {
 			similarList.add(((Map.Entry<String, Double>) a[i]).getKey());
 		 }
 		 
-		 HashMap<String,List<String>> wordAndSuggestions = new  HashMap<String,List<String>>();
-		 wordAndSuggestions.put(word,similarList);
+		 foundSuggestions.put(word,similarList);
 		
-         return wordAndSuggestions;
+         return similarList;
 	}
+
+
 
 }

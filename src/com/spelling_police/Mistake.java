@@ -26,8 +26,9 @@ public class Mistake {
 	}
 	
 	public List<String> getSuggestions() {
+		
 		if (suggestions == null) {
-			suggestions = Dictionary.getDictionary(this.language).similarList(word, 3);
+			suggestions = Solver.findBestSuggestions(word, 3, language);
 		}
 		return suggestions;
 	}
