@@ -18,7 +18,7 @@ public class Parser {
  * Separates a given text/string into individual periods and
  * inserts them in an ArrayList.
  */
-	private  ArrayList<String> splitIntoSentences(String text) {
+	protected ArrayList<String> splitIntoSentences(String text) {
 		ArrayList<String> sentences = new ArrayList<String>();
 		Matcher match = endOfSentence.matcher(text);
 
