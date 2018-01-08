@@ -1,5 +1,6 @@
 package com.spelling_police;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -59,8 +60,9 @@ public class ApplicationWindow implements MouseListener {
 	private JTextArea textArea;
 	private JPanel suggestionsPanel;
 	private TextAreaListener textAreaListener;
+	private DefaultHighlightPainter correctionPainter = new DefaultHighlightPainter(Color.decode("#C6ED77"));
 	private DefaultHighlightPainter mistakePainter = new DefaultHighlightPainter(Color.decode("#FF8380"));
-
+	private boolean suggestionsActive = false;
 	/**
 	 * Creates the GUI for the starting page that appears when a user runs the
 	 * application.
@@ -135,6 +137,20 @@ public class ApplicationWindow implements MouseListener {
 		frame.setSize(800, 800);
 		frame.setVisible(true);
 	}
+	
+	private void highlightCorrections(int start, int end, List<Integer> corrections) {
+		Highlighter hl = textArea.getHighlighter();
+//        hl.removeAllHighlights();
+		try {
+			for (int offset : corrections) {
+				Object o2 = hl.addHighlight(start + offset, start + offset + 1, correctionPainter);
+			}
+			Object o1 = hl.addHighlight(start, end, mistakePainter);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Removes all dynamic elements, e.g. all elements that should be replaced
@@ -205,7 +221,7 @@ public class ApplicationWindow implements MouseListener {
 		dynamicComponents.add(mainPanel);
 		dynamicComponents.add(suggestionsPanel);
 	}
-
+	
 	public void loadFileFromSystem() {
 		
 		JFileChooser fileChooser = new JFileChooser();
@@ -234,15 +250,21 @@ public class ApplicationWindow implements MouseListener {
 		}
 	}
 
-	public void fillSuggestionsPanel(List<String> suggestions, String wrongWord) {
+	public void fillSuggestionsPanel(Mistake mistake, String wrongWord) {
+		suggestionsActive = true;
 		suggestionsPanel.removeAll();
-		for (String suggestion : suggestions) {
+		
+		final int originalPosition = textArea.getCaretPosition();
+		
+		for (String suggestion : mistake.getSuggestions()) {
 			JButton button = new JButton(suggestion);
 			button.setName(suggestion);
 			suggestionsPanel.add(button);
 
 			button.addMouseListener(new MouseListener() {
-
+				
+				String startingText = "";
+				
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					String replacement = e.getComponent().getName();
@@ -251,15 +273,31 @@ public class ApplicationWindow implements MouseListener {
 				}
 
 				@Override
-				public void mouseEntered(MouseEvent arg0) {
-					// TODO Auto-generated method stub
-
+				public void mouseEntered(MouseEvent e) {
+					startingText = textArea.getText();
+					textArea.setCaretPosition(originalPosition);
+					int start = 0;
+					int end = 0;
+					
+					try {
+						start = Utilities.getWordStart(textArea, textArea.getCaretPosition());
+						end = Utilities.getWordEnd(textArea, textArea.getCaretPosition());
+					} catch (BadLocationException exc) {
+						exc.printStackTrace();
+						return;
+					}
+					
+					String replacement = e.getComponent().getName();
+					List<Integer> differentIndexes = mistake.findWrongPosition(replacement);
+					String newText = startingText.substring(0, start) + replacement + startingText.substring(end, startingText.length());
+					textArea.setText(newText);
+					highlightCorrections(start, end, differentIndexes);
 				}
 
 				@Override
 				public void mouseExited(MouseEvent arg0) {
-					// TODO Auto-generated method stub
-
+					textArea.setCaretPosition(originalPosition);
+					textArea.setText(startingText);
 				}
 
 				@Override
@@ -315,6 +353,7 @@ public class ApplicationWindow implements MouseListener {
 		suggestionsPanel.removeAll();
 		frame.setVisible(true);
 		frame.repaint();
+		suggestionsActive = false;
 	}
 
 	public void handleTextAreaClick(MouseEvent e) {
@@ -322,10 +361,12 @@ public class ApplicationWindow implements MouseListener {
 			Mistake mistake = getMistakeFromPoint(e.getPoint());
 			if (mistake != null) {
 				suggestionsPanel.setName(mistake.getWord());
-				fillSuggestionsPanel(mistake.getSuggestions(), mistake.getWord());
+				fillSuggestionsPanel(mistake, mistake.getWord());
 			} else {
 				clearSuggestionsPanel();
 			}
+		} else {
+			clearSuggestionsPanel();
 		}
 	}
 
@@ -352,5 +393,9 @@ public class ApplicationWindow implements MouseListener {
 		// TODO Auto-generated method stub
 
 	}
-
+	
+	public boolean areSuggestionsActive() {
+		return suggestionsActive;
+	}
+	
 }

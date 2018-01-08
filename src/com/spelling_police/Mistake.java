@@ -11,7 +11,6 @@ public class Mistake {
 	private String word;
 	private String language;
 	private List<String> suggestions;
-	private List<Integer> wrongPositions;
 	
 	private Thread suggestionsThread;
 	
@@ -32,21 +31,20 @@ public class Mistake {
 		return suggestions;
 	}
 	
-	public List<Integer> getWrongPosition(){
-		if (this.wrongPositions == null) {
-			wrongPositions = findWrongPosition(word);
-		}
-		return wrongPositions;
-	}
 	
 	/**
 	 * word : The word the user inputs OR one of the words of a String the user inputs
 	 * suggestions : The list of the classified suggestions taken by Solver class.
 	 * suggestions.get(1) : The best result. 
 	 */
-	public List<Integer> findWrongPosition(String word){
-		return wrongPositions = indexOfDifference(word, this.getSuggestions().get(0));
+	public List<Integer> findWrongPosition(String compareTo){
+		return indexOfDifference(this.word, compareTo);
 	}
+	
+	public List<Integer> findWrongPosition() {
+		return indexOfDifference(this.word, this.getSuggestions().get(0));
+	}
+	
 	public static List<Integer> indexOfDifference(String word1, String word2) {
 		List<Integer> positions = new ArrayList<Integer>();
 	    /*if (str1 == str2) {
@@ -110,15 +108,4 @@ public class Mistake {
 		return this.word + "(" + this.sentence + ", " + this.position + ")";
 	}
 	
-	public static void main(String[]args){
-		
-		Mistake test = new Mistake("����������", "el", 1, 1);
-		System.out.println(test.getSuggestions());
-		System.out.println(test.getWrongPosition());
-		
-		Mistake test2 = new Mistake("��������", "el", 1, 1);
-		System.out.println(test2.getSuggestions());
-		System.out.println(test2.getWrongPosition());
-		
-	}
 }
