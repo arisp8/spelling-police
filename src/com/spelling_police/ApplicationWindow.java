@@ -1,4 +1,5 @@
 package com.spelling_police;
+
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -6,11 +7,16 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.ButtonGroup;
+import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -26,6 +32,7 @@ import javax.swing.text.Utilities;
 import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.SwingUtilities;
 
+import java.awt.Component;
 import java.awt.Robot;
 import java.awt.Dimension;
 import java.awt.AWTException;
@@ -34,12 +41,15 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import javax.swing.JFileChooser;
 
 import java.io.BufferedReader;
@@ -50,6 +60,10 @@ import java.util.Scanner;
 import java.util.stream.Stream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+
+import javax.swing.*;
+
+import java.awt.event.*;
 //import java.awt.event.*;
 
 public class ApplicationWindow implements MouseListener {
@@ -63,6 +77,7 @@ public class ApplicationWindow implements MouseListener {
 	private DefaultHighlightPainter correctionPainter = new DefaultHighlightPainter(Color.decode("#C6ED77"));
 	private DefaultHighlightPainter mistakePainter = new DefaultHighlightPainter(Color.decode("#FF8380"));
 	private boolean suggestionsActive = false;
+	
 	/**
 	 * Creates the GUI for the starting page that appears when a user runs the
 	 * application.
@@ -76,24 +91,62 @@ public class ApplicationWindow implements MouseListener {
 
 		ImageIcon img = new ImageIcon(imagesPath + "Logo.png");
 		frame.setIconImage(img.getImage());
-
-		JLabel fileLabel = new JLabel("File");
-		JLabel optionsLabel = new JLabel("Options");
-
+		
+		JMenuBar jmenubar = new JMenuBar();
+		frame.setJMenuBar(jmenubar);
+		
+		JMenu file = new JMenu("File");
+		jmenubar.add(file);
+		JMenuItem new1 = new JMenuItem("New");
+		JMenuItem open = new JMenuItem("Open");
+		JMenuItem save = new JMenuItem("Save");
+		JMenuItem exit = new JMenuItem("Exit");
+		file.add(new1);
+		file.add(open);
+		file.add(save);
+		file.add(exit);
+		
+		JMenu options = new JMenu("Options");
+		jmenubar.add(options);
+		
+		HashMap<String, Config> availableLanguages = Config.getAvailableLanguages();
+		
+		ButtonGroup buttonGroup = new ButtonGroup();
+		
+		int i = 0;
+		for (Config config : availableLanguages.values()) {
+			JToggleButton toggleButton = new JToggleButton(config.getDisplayName());
+			toggleButton.setName(config.getLanguageCode());
+			buttonGroup.add(toggleButton);
+			options.add(toggleButton);
+			
+			toggleButton.addItemListener(new ItemListener() {
+			   public void itemStateChanged(ItemEvent ev) {
+			      if(ev.getStateChange() == ItemEvent.SELECTED){
+			    	  System.out.println(((Component) ev.getSource()).getName());
+			    	  Config.setActiveLanguage(((Component) ev.getSource()).getName());
+			      }
+			   }
+			});
+			i++;
+		}
+		
+		new1.addActionListener(new TopMenuListener(this));
+		open.addActionListener(new TopMenuListener(this));
+		save.addActionListener(new TopMenuListener(this));
+		exit.addActionListener(new TopMenuListener(this));
+		
 		// Set padding for the top buttons
-		fileLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		optionsLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		file.setBorder(new EmptyBorder(10, 10, 10, 10));
+		options.setBorder(new EmptyBorder(10, 10, 10, 10));
 
 		// Increase label font size
-		fileLabel.setFont(fileLabel.getFont().deriveFont(16.0f));
-		optionsLabel.setFont(optionsLabel.getFont().deriveFont(16.0f));
-
-		fileLabel.addMouseListener(new TopMenuListener(fileLabel));
-		optionsLabel.addMouseListener(new TopMenuListener(optionsLabel));
+		file.setFont(file.getFont().deriveFont(16.0f));
+		options.setFont(options.getFont().deriveFont(16.0f));
 
 		// Set gray text color for the labels
-		fileLabel.setForeground(Color.decode("#666666"));
-		optionsLabel.setForeground(Color.decode("#666666"));
+		file.setForeground(Color.decode("#666666"));
+		options.setForeground(Color.decode("#666666"));
 
 		JLabel fileIcon = new JLabel(new ImageIcon(imagesPath + "File.png"));
 		fileIcon.setName("from-file");
@@ -109,12 +162,6 @@ public class ApplicationWindow implements MouseListener {
 		linkIcon.addMouseListener(new MainIconListener(linkIcon, this));
 		imageIcon.addMouseListener(new MainIconListener(imageIcon, this));
 
-		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new BorderLayout());
-		topPanel.add(fileLabel, BorderLayout.LINE_START);
-		topPanel.add(optionsLabel, BorderLayout.LINE_END);
-		topPanel.setBackground(Color.WHITE);
-
 		JPanel topGroupPanel = new JPanel();
 		topGroupPanel.add(textIcon, BorderLayout.WEST);
 		topGroupPanel.add(fileIcon, BorderLayout.EAST);
@@ -129,7 +176,6 @@ public class ApplicationWindow implements MouseListener {
 		dynamicComponents.add(topGroupPanel);
 		dynamicComponents.add(bottomGroupPanel);
 
-		frame.getContentPane().add(topPanel, BorderLayout.PAGE_START);
 		frame.getContentPane().add(topGroupPanel, BorderLayout.CENTER);
 		frame.getContentPane().add(bottomGroupPanel, BorderLayout.AFTER_LAST_LINE);
 
@@ -137,6 +183,8 @@ public class ApplicationWindow implements MouseListener {
 		frame.setSize(800, 800);
 		frame.setVisible(true);
 	}
+	
+	
 	
 	private void highlightCorrections(int start, int end, List<Integer> corrections) {
 		Highlighter hl = textArea.getHighlighter();
@@ -249,12 +297,12 @@ public class ApplicationWindow implements MouseListener {
 			}
 		}
 	}
-	
+
 	public String capitalizeString(String word) {
 		return Character.toString(Character.toUpperCase(word.charAt(0))) + word.substring(1);
 	}
 	
-	public void fillSuggestionsPanel(Mistake mistake, String wrongWord) {
+	public void fillSuggestionsPanel(final Mistake mistake, final String wrongWord) {
 		suggestionsActive = true;
 		suggestionsPanel.removeAll();
 		
