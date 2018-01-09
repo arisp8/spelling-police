@@ -2,6 +2,8 @@ package com.spelling_police;
 
 import java.awt.Color;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -11,60 +13,42 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.*;
 
-public class TopMenuListener implements MouseListener {
+public class TopMenuListener implements ActionListener {
 	
 	private CompoundBorder hoverBorder;
-	private JLabel label;
+	private ApplicationWindow applWind;
 	private EmptyBorder originalBorder;
-	public TopMenuListener(JLabel label) {
+	
+	/**
+	 * constructor
+	 * @param label
+	 */
+	public TopMenuListener(ApplicationWindow applWind) {
 		
-		this.label = label;
-		originalBorder = (EmptyBorder) this.label.getBorder();
+		this.applWind = applWind;
 		
-		if (hoverBorder == null) {
-			Border beveledBorder = BorderFactory.createSoftBevelBorder(BevelBorder.RAISED, 
-					Color.decode("#666666"), Color.decode("#ebebeb"));
-			System.out.println(originalBorder.getBorderInsets());
-			Insets insets = originalBorder.getBorderInsets();
-			
-			// Decrease padding size to avoid choppy effects.
-			insets.top = insets.top == 0 ? 0 : insets.top - 3;
-			insets.left = insets.left == 0 ? 0 : insets.left - 3;
-			insets.bottom = insets.bottom == 0 ? 0 : insets.bottom - 3;
-			insets.right = insets.right == 0 ? 0 : insets.right - 3;
-					
-			EmptyBorder innerPadding = new EmptyBorder(insets);
-			hoverBorder = BorderFactory.createCompoundBorder(beveledBorder, innerPadding);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		switch (e.getActionCommand()) {
+			case "New":
+				applWind.createTextEditorPage();
+				break;
+			case "Open":
+				applWind.loadFileFromSystem();
+				break;
+			case "Save":
+				break;
+			case "Exit":
+				System.exit(0);
+				break;
 		}
+		
 	}
 	
-	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		this.label.setBorder(hoverBorder);
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		this.label.setBorder(originalBorder);
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 }
