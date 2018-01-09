@@ -88,12 +88,24 @@ public class Config {
 		return this.encoding;
 	}
 	
+	public String getDisplayName() {
+		return this.displayName;
+	}
+	
 	public String getLanguageCode() {
 		return this.languageCode;
 	}
 	
 	public static Config getActiveLanguageConfig() {
 		return availableLanguages.get(activeLanguage);
+	}
+	
+	public static HashMap<String, Config> getAvailableLanguages() {
+		return availableLanguages;
+	}
+	
+	public static void setActiveLanguage(String language) {
+		activeLanguage = language;
 	}
 	
 }
