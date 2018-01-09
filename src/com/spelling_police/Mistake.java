@@ -59,19 +59,33 @@ public class Mistake {
 	    if (word1.length() != word2.length()){
 	    	String[] equalLength = makeWordsEqual(word1, word2);
 		    word1 = equalLength[0];
-		    word2 = equalLength[1];
+		    word2 = equalLength[1];   
 	    }
 	    
 	    for (i = 0; i < word1.length(); ++i) {
-	    	if (word1.charAt(i) != word2.charAt(i)) {
-	       		positions.add(i);
-		    }
+	    	try {
+	    		if (word1.charAt(i) != word2.charAt(i)) {
+		       		positions.add(i);
+			    }
+	    	} catch (StringIndexOutOfBoundsException e) {
+	    		if (word1.length() < word2.length()) {
+	    			while(word1.length() < word2.length()) {
+	    				word1 += "0";
+	    			}
+	    		} else {
+	    			while(word2.length() < word1.length()) {
+	    				word2 += "0";
+	    			}
+	    		}
+	    		return indexOfDifference(word1, word2);
+	    	}
+	    	
 	    }
 	    
 	    return positions;
 	}
 	
-	public static String[] makeWordsEqual(String wrong_word , String best_suggestion){
+	public static String[] makeWordsEqual(String wrong_word, String best_suggestion){
 		
 		String bigger;
 		String smaller;
