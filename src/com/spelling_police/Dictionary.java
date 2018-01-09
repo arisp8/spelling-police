@@ -167,15 +167,22 @@ public class Dictionary {
 			System.out.println(e.getMessage());
 			return foundWords;
 		}
-		
-		String firstWord = getFirstWord(word.charAt(0));
-		String lastWord = getLastWord(word.charAt(0));
+		String firstWord = getFirstWord(Character.toLowerCase(word.charAt(0)));
+		String lastWord = getLastWord(Character.toLowerCase(word.charAt(0)));
 		
 		if (!firstWords.containsKey(word.charAt(0)) || !lastWords.containsKey(word.charAt(0))) {
 			return null;
 		}
 		
-	    for (String s : wordList.subSet(firstWord, lastWord)) {
+		TreeSet<String> eligibleWords;
+		
+		if (strict) {
+			eligibleWords = (TreeSet<String>) wordList.subSet(firstWord, lastWord);
+		} else {
+			eligibleWords = wordList;
+		}
+		
+	    for (String s : eligibleWords) {
 	    	
 	        // Calculate the Levenshtein distance:
 	        int levenshteinDistance = levenshteinDistance(word, s);
