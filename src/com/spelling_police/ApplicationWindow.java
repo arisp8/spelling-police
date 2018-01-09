@@ -54,6 +54,8 @@ import javax.swing.JFileChooser;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
@@ -281,6 +283,40 @@ public class ApplicationWindow implements MouseListener {
 		   String text = Input.inFile(filePath, Config.getActiveLanguageConfig().getEncoding());
 		   createTextEditorPage(text);
 		}
+	}
+	
+	
+	/**
+	 * Saves the text into a file
+	 * @throws IOException
+	 */
+	public void saveFile() {
+		JFileChooser fileChooser = new JFileChooser();
+		int userSelection = fileChooser.showSaveDialog(frame);
+		if (userSelection == JFileChooser.APPROVE_OPTION) {
+		    File fileToSave = fileChooser.getSelectedFile();
+		    String fileSave = fileToSave.toString();
+		    /*System.out.println("Save as file: " + fileToSave.getAbsolutePath());*/
+		    if (textArea!=null) {
+		    	FileOutputStream out = null;
+				try {
+					out = new FileOutputStream(fileSave);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+		    	try {
+					out.write(textArea.getText().getBytes());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+					try {
+						out.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+		    }
+		}
+		
 	}
 	
 	

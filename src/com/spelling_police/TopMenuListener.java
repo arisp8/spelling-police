@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -41,6 +42,7 @@ public class TopMenuListener implements ActionListener {
 				applWind.loadFileFromSystem();
 				break;
 			case "Save":
+				applWind.saveFile();
 				break;
 			case "Exit":
 				System.exit(0);
