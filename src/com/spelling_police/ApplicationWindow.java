@@ -334,13 +334,23 @@ public class ApplicationWindow implements MouseListener {
 		}
 	}
 
+	public String capitalizeString(String word) {
+		return Character.toString(Character.toUpperCase(word.charAt(0))) + word.substring(1);
+	}
+	
 	public void fillSuggestionsPanel(final Mistake mistake, final String wrongWord) {
 		suggestionsActive = true;
 		suggestionsPanel.removeAll();
 		
 		final int originalPosition = textArea.getCaretPosition();
 		
+		boolean capitalize = mistake.getWord().charAt(0) == Character.toUpperCase(mistake.getWord().charAt(0));
+		
 		for (String suggestion : mistake.getSuggestions()) {
+			if (capitalize) {
+				suggestion = capitalizeString(suggestion);
+				System.out.println(suggestion);
+			}
 			JButton button = new JButton(suggestion);
 			button.setName(suggestion);
 			suggestionsPanel.add(button);

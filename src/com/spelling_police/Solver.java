@@ -19,7 +19,7 @@ public class Solver {
   HashMap < String, Double > foundWords = new HashMap < String, Double > ();
 
   double fuzzyness = 0.7;
-  boolean strict = true;
+  boolean strict = false;
 
   if (foundSuggestions.containsKey(word)) {
    return foundSuggestions.get(word);
