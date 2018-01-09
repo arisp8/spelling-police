@@ -280,7 +280,7 @@ public class ApplicationWindow implements MouseListener {
 		if (result == JFileChooser.APPROVE_OPTION) {
 		   File selectedFile = fileChooser.getSelectedFile();
 		   String filePath =selectedFile.toString();
-		   String text = Input.inFile(filePath, Config.getActiveLanguageConfig().getEncoding());
+		   String text = Input.inFile(filePath, "utf8");
 		   createTextEditorPage(text);
 		}
 	}
