@@ -42,7 +42,6 @@ public class Parser {
 	* @return boolean This returns 'true' if the element is a word or 'false' otherwise
 	*/
 	public boolean isWord(String element) {
-
 		if (element.length() == 0) {
 			return false;
 		}
@@ -79,7 +78,9 @@ public class Parser {
 				// any punctuation.
 				if (isWord(elements[i])) {
 					elements[i] = elements[i].replaceAll("\\p{P}", "");
-					words.add(elements[i]);
+					if(elements[i].length() > 0) {
+						words.add(elements[i]);
+					}
 				}
 			}
 			result.add(words);
