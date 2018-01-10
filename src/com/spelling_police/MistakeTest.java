@@ -11,12 +11,13 @@ public class MistakeTest {
 
 	@Test
 	public void findWrongPositionTest() {
-	Mistake test = new Mistake("δοκιμί", "el", 1 ,1);
-	List<Integer> output = test.findWrongPosition("δοκιμή");
-	List<Integer> list1 = new ArrayList<Integer>();
-	list1.add(5);
-
-	assertArrayEquals(list1.toArray(), output.toArray());
+		Config.bootstrap();
+		Mistake test = new Mistake("δοκιμί", "el", 1 ,1);
+		List<Integer> output = test.findWrongPosition("δοκιμή");
+		List<Integer> list1 = new ArrayList<Integer>();
+		list1.add(5);
+	
+		assertArrayEquals(list1.toArray(), output.toArray());
 
 
 	}
