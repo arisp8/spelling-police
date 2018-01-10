@@ -1,3 +1,4 @@
+
 package com.spelling_police;
 
 import javax.swing.BoxLayout;
@@ -66,7 +67,6 @@ import java.nio.file.*;
 import javax.swing.*;
 
 import java.awt.event.*;
-//import java.awt.event.*;
 
 public class ApplicationWindow implements MouseListener {
 	
@@ -81,8 +81,7 @@ public class ApplicationWindow implements MouseListener {
 	private boolean suggestionsActive = false;
 	
 	/**
-	 * Creates the GUI for the starting page that appears when a user runs the
-	 * application.
+	 * Creates the GUI for the starting page that appears when a user runs the application.
 	 */
 	public void createStartPage() {
 		updatePage();
@@ -94,9 +93,11 @@ public class ApplicationWindow implements MouseListener {
 		ImageIcon img = new ImageIcon(imagesPath + "Logo.png");
 		frame.setIconImage(img.getImage());
 		
+		//Creates a menu bar
 		JMenuBar jmenubar = new JMenuBar();
 		frame.setJMenuBar(jmenubar);
 		
+		//Creates options
 		JMenu file = new JMenu("File");
 		jmenubar.add(file);
 		JMenuItem new1 = new JMenuItem("New");
@@ -113,8 +114,10 @@ public class ApplicationWindow implements MouseListener {
 		
 		HashMap<String, Config> availableLanguages = Config.getAvailableLanguages();
 		
+		//Creates a button group to toggle on/off the languages
 		ButtonGroup buttonGroup = new ButtonGroup();
 		
+		//Creates new toggles when a new language is added in the programm
 		int i = 0;
 		for (Config config : availableLanguages.values()) {
 			JToggleButton toggleButton = new JToggleButton(config.getDisplayName());
@@ -133,6 +136,7 @@ public class ApplicationWindow implements MouseListener {
 			i++;
 		}
 		
+		//Activates the File's options
 		new1.addActionListener(new TopMenuListener(this));
 		open.addActionListener(new TopMenuListener(this));
 		save.addActionListener(new TopMenuListener(this));
@@ -150,6 +154,7 @@ public class ApplicationWindow implements MouseListener {
 		file.setForeground(Color.decode("#666666"));
 		options.setForeground(Color.decode("#666666"));
 
+		// Creates the images of the program's choices
 		JLabel fileIcon = new JLabel(new ImageIcon(imagesPath + "File.png"));
 		fileIcon.setName("from-file");
 		JLabel textIcon = new JLabel(new ImageIcon(imagesPath + "Text.png"));
@@ -186,18 +191,21 @@ public class ApplicationWindow implements MouseListener {
 		frame.setVisible(true);
 	}
 	
-	
-	
+	/**
+	 * 
+	 * @param start : ;;;
+	 * @param end : ;;;
+	 * @param corrections : ;;;
+	 */
 	private void highlightCorrections(int start, int end, List<Integer> corrections) {
 		Highlighter hl = textArea.getHighlighter();
-//        hl.removeAllHighlights();
+		//hl.removeAllHighlights();
 		try {
 			for (int offset : corrections) {
 				Object o2 = hl.addHighlight(start + offset, start + offset + 1, correctionPainter);
 			}
 			Object o1 = hl.addHighlight(start, end, mistakePainter);
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -226,10 +234,8 @@ public class ApplicationWindow implements MouseListener {
 
 	/**
 	 * Creates the text editor page where mistakes are highlighted and
-	 * suggestions are displayed on right click.
-	 * 
-	 * @param defaultText
-	 *            The default text to show in the text area.
+	 * suggestions are displayed on right click. 
+	 * @param defaultText : The default text to show in the text area.
 	 */
 	public void createTextEditorPage(String defaultText) {
 		updatePage();
@@ -272,6 +278,9 @@ public class ApplicationWindow implements MouseListener {
 		dynamicComponents.add(suggestionsPanel);
 	}
 	
+	/**
+	 * Loads the chosen file from the system
+	 */
 	public void loadFileFromSystem() {
 		
 		JFileChooser fileChooser = new JFileChooser();
@@ -319,8 +328,9 @@ public class ApplicationWindow implements MouseListener {
 		
 	}
 	
-	
-	
+	/**
+	 * Loads a URL from the Internet
+	 */
 	public void loadFromRemoteURL() {
 		String url = (String) JOptionPane.showInputDialog(frame, "Enter the url:", "Load from URL",
 				JOptionPane.PLAIN_MESSAGE, null, null, "");
@@ -338,6 +348,11 @@ public class ApplicationWindow implements MouseListener {
 		return Character.toString(Character.toUpperCase(word.charAt(0))) + word.substring(1);
 	}
 	
+	/**
+	 * 
+	 * @param mistake : 
+	 * @param wrongWord : 
+	 */
 	public void fillSuggestionsPanel(final Mistake mistake, final String wrongWord) {
 		suggestionsActive = true;
 		suggestionsPanel.removeAll();
@@ -443,6 +458,9 @@ public class ApplicationWindow implements MouseListener {
 		return "";
 	}
 
+	/**
+	 * Clears the panel where the suggestions were displayed
+	 */
 	public void clearSuggestionsPanel() {
 		suggestionsPanel.removeAll();
 		frame.setVisible(true);
