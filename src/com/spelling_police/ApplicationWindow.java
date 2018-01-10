@@ -1,11 +1,29 @@
 
 package com.spelling_police;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Point;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -15,58 +33,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-import javax.swing.ButtonGroup;
 import javax.swing.JToggleButton;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Highlighter;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-import javax.swing.text.Utilities;
-import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.SwingUtilities;
-
-import java.awt.Component;
-import java.awt.Robot;
-import java.awt.Dimension;
-import java.awt.AWTException;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.swing.JFileChooser;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Scanner;
-import java.util.stream.Stream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-
-import javax.swing.*;
-
-import java.awt.event.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
+import javax.swing.text.Highlighter;
+import javax.swing.text.Utilities;
 
 public class ApplicationWindow implements MouseListener {
 	
@@ -117,8 +90,7 @@ public class ApplicationWindow implements MouseListener {
 		//Creates a button group to toggle on/off the languages
 		ButtonGroup buttonGroup = new ButtonGroup();
 		
-		//Creates new toggles when a new language is added in the programm
-		int i = 0;
+		//Creates new toggles when a new language is added in the programme
 		for (Config config : availableLanguages.values()) {
 			JToggleButton toggleButton = new JToggleButton(config.getDisplayName());
 			toggleButton.setName(config.getLanguageCode());
@@ -133,7 +105,6 @@ public class ApplicationWindow implements MouseListener {
 			      }
 			   }
 			});
-			i++;
 		}
 		
 		//Activates the File's options
@@ -202,9 +173,11 @@ public class ApplicationWindow implements MouseListener {
 		//hl.removeAllHighlights();
 		try {
 			for (int offset : corrections) {
-				Object o2 = hl.addHighlight(start + offset, start + offset + 1, correctionPainter);
+				hl.addHighlight(start + offset, start + offset + 1, correctionPainter);
 			}
-			Object o1 = hl.addHighlight(start, end, mistakePainter);
+			
+			hl.addHighlight(start, end, mistakePainter);
+			
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
@@ -216,10 +189,8 @@ public class ApplicationWindow implements MouseListener {
 	 */
 	private void updatePage() {
 
-		int index = 0;
 		for (JComponent component : dynamicComponents) {
 			frame.getContentPane().remove(component);
-			index++;
 		}
 
 		dynamicComponents = new ArrayList<JComponent>();

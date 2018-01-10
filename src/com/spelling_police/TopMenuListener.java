@@ -1,20 +1,10 @@
 package com.spelling_police;
 
-import java.awt.Color;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.IOException;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.*;
 
 public class TopMenuListener implements ActionListener {
 	

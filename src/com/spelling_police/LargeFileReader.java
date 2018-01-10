@@ -1,10 +1,8 @@
 package com.spelling_police;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.Iterator;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.File;
+import java.util.Iterator;
 
 /**
 *@class that reads a large text file one line at a time
@@ -53,7 +51,6 @@ public class LargeFileReader implements Iterable<String> {
 
             @Override
             public void remove() { //removes the current line
-
                 throw new UnsupportedOperationException();
             }
         };

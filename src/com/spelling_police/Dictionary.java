@@ -1,15 +1,10 @@
 package com.spelling_police;
 
-import java.util.List;
+import java.io.File;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.TreeMap;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.TreeSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Arrays;
-import java.util.Comparator;
 
 public class Dictionary {
 	

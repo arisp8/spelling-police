@@ -1,5 +1,4 @@
 package com.spelling_police;
-import java.io.*;
 
 /**
  * @class
