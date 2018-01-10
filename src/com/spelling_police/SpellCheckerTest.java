@@ -1,15 +1,15 @@
 package com.spelling_police;
 
-import static org.junit.Assert*;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
 import org.junit.Test;
 
-class SpellCheckerTest {
+public class SpellCheckerTest {
 
 	@Test
-	void spellCheckerFindsMistakeInString() {
+	public void spellCheckerFindsMistakeInString() {
 		SpellChecker test = new SpellChecker();
 		ArrayList<Mistake> output = test.findMistakes("αβγδ");
 		ArrayList<Mistake> list1 = new ArrayList<Mistake>();
