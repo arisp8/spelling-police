@@ -2,18 +2,21 @@ package com.spelling_police;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
-class MistakeTest {
+public class MistakeTest {
 
 	@Test
 	public void findWrongPositionTest() {
-	Mistake test = new Mistake("ασταίρι", "el", 1 ,1);
-	List<Integer> output = test.findWrongPosition("ασταίρι");
-	List<Integer> list1 = new List<Integer>();
-	list1.add(new Mistake("ασταίρι","el",1 ,1));
+	Mistake test = new Mistake("δοκιμί", "el", 1 ,1);
+	List<Integer> output = test.findWrongPosition("δοκιμή");
+	List<Integer> list1 = new ArrayList<Integer>();
+	list1.add(5);
 
-	assertListEquals(list1, output);
+	assertArrayEquals(list1.toArray(), output.toArray());
 
 
 	}
