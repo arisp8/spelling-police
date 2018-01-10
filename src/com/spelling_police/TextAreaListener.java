@@ -72,7 +72,7 @@ public class TextAreaListener implements DocumentListener {
 				
 				if (Character.isLetterOrDigit(lastChar)) {
 					currentWord = findCurrentWord(this.textArea);
-				} else if (lastChar == ' ' || lastChar == ',' || lastChar == '\n') {
+				} else if (lastChar == ' ' || lastChar == ',' || lastChar == '\n' && currentWord != null) {
 					currentWord = currentWord.replace(',', '\0');
 					// Call singleWordCheck with strict enabled to make sure everything works correctly.
 					Mistake currentMistake = spellCheck.singleWordCheck(currentWord, sentenceCount, wordCount, true);
@@ -109,7 +109,7 @@ public class TextAreaListener implements DocumentListener {
             // In order to avoid matching substrings in other words, we make sure
 			// to only highlight words that are followed by either whitespace or 
 			// punctuation.
-            Matcher m = Pattern.compile(word + "[\\s\\p{P}]").matcher(text);
+            Matcher m = Pattern.compile("[\\s\\p{P}$]" + word + "[\\s\\p{P}]").matcher(text);
             
             while (m.find()) {
             	try {
