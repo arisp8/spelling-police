@@ -3,7 +3,6 @@ package com.spelling_police;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,9 +10,9 @@ import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.Highlighter;
 import javax.swing.text.Utilities;
-import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 
 public class TextAreaListener implements DocumentListener {
 	
@@ -109,11 +108,11 @@ public class TextAreaListener implements DocumentListener {
             // In order to avoid matching substrings in other words, we make sure
 			// to only highlight words that are followed by either whitespace or 
 			// punctuation.
-            Matcher m = Pattern.compile("[\\s\\p{P}$]" + word + "[\\s\\p{P}]").matcher(text);
+            Matcher m = Pattern.compile("([\\s\\p{P}]|^)(" + word + ")([\\s\\p{P}])").matcher(text);
             
             while (m.find()) {
             	try {
-					Object o = hl.addHighlight(m.start(), m.start() + word.length(), mistakePainter);
+					Object o = hl.addHighlight(m.start() + m.group(1).length(), m.start() + m.group(1).length() + word.length(), mistakePainter);
 				} catch (BadLocationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
