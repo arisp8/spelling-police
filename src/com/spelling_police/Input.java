@@ -31,7 +31,7 @@ public class Input {
 	 */
 	public static String inFile(String fileName, String encoding){
 
-		try{
+		try {
 			BufferedReader buffread = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), encoding));
 			String text= buffread.readLine();
 			String content = "";
